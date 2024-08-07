@@ -1,0 +1,299 @@
+<!DOCTYPE HTML>
+<html lang="en">
+
+
+<!-- Mirrored from wp.alithemes.com/html/evara/evara-backend/page-categories.html by HTTrack Website Copier/3.x [XR&CO'2014], Sun, 01 Aug 2021 15:33:21 GMT -->
+
+<head>
+    <meta charset="utf-8">
+    <title>WatchVault Categories</title>
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta property="og:title" content="">
+    <meta property="og:type" content="">
+    <meta property="og:url" content="">
+    <meta property="og:image" content="">
+    <!-- Favicon -->
+    <!-- <link rel="shortcut icon" type="image/x-icon" href="adminAssets/imgs/theme/favicon.svg"> -->
+    <!-- Template CSS -->
+    <link href="adminAssets/css/main.css" rel="stylesheet" type="text/css" />
+</head>
+
+<body>
+    <div class="screen-overlay"></div>
+    <%- include('./partials/adminAside.ejs') %>
+        <main class="main-wrap">
+            <%- include('./partials/adminHeader.ejs') %>
+                <section class="content-main">
+                    <div class="content-header">
+                        <div>
+                            <h2 class="content-title card-title">Categories </h2>
+                        </div>
+                        <div>
+                            <!-- <input type="text" placeholder="Search Categories" class="form-control bg-white"> -->
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <form action=" " method="post" id="categoryForm">
+                                        <div class="mb-4">
+                                            <label for="categoryName" class="form-label">Category</label>
+                                            <input type="text" name="categoryName" placeholder="Type here"
+                                                class="form-control" id="categoryName" />
+                                            <div class="text-danger" id="categoryNameError"></div>
+                                        </div>
+                                        <div class="mb-4">
+                                            <label class="form-label">Description</label>
+                                            <input type="text" name="description" placeholder="Type here"
+                                                class="form-control" id="description" />
+                                            <div class="text-danger" id="descriptionError"></div>
+                                        </div>
+                                        <div class="d-grid">
+                                            <button type="submit" class="btn btn-primary">Create category</button>
+                                        </div>
+                                    </form>
+
+                                </div>
+                                <div class="col-md-9">
+                                    <div class="table-responsive">
+                                        <% if(locals.categories){ %>
+                                            <table class="table table-hover">
+                                                <thead>
+                                                    <tr>
+                                                        <th class="text-center">
+                                                            <div class="form-check">
+                                                                <!-- <input class="form-check-input" type="checkbox" value="" /> -->
+                                                            </div>
+                                                        </th>
+                                                        <th>Category Name</th>
+                                                        <th>Description</th>
+                                                        <th class="text-center">Action</th>
+                                                    </tr>
+                                                </thead>
+                                                <% for(let i=0; i < categories.length; i++){ %>
+                                                    <tbody>
+                                                        <tr>
+                                                            <td class="text-center">
+                                                                <div class="form-check">
+                                                                </div>
+                                                            </td>
+                                                            <td>
+                                                                <b>
+                                                                    <%= categories[i].categoryName %>
+                                                                </b>
+                                                            </td>
+                                                            <td>
+                                                                <%= categories[i].description %>
+                                                            </td>
+                                                            <td>
+                                                                <a href="/admin/loadEditCategory?id=<%=categories[i]._id%>"
+                                                                    class="btn btn-sm btn-warning rounded font-sm mt-15">
+                                                                    Edit
+                                                                </a>
+                                                            </td>
+                                                            <td>
+                                                                <% if (categories[i].is_Active) { %>
+                                                                    <a href="/admin/unlistCategory?id=<%= categories[i]._id %>"
+                                                                        class="btn btn-sm btn-danger rounded font-sm mt-15">Block</a>
+                                                                    <% } else{ %>
+                                                                        <a href="/admin/listCategory?id=<%= categories[i]._id %>"
+                                                                            class="btn btn-sm btn-success rounded font-sm mt-15">Unblock</a>
+                                                                        <% } %>
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                    <% } %>
+                                            </table>
+                                            <% } %>
+                                    </div>
+                                </div> <!-- .col// -->
+                            </div> <!-- .row // -->
+                        </div> <!-- card body .// -->
+                    </div> <!-- card .// -->
+                </section> <!-- content-main end// -->
+                <footer class="main-footer font-xs">
+
+                </footer>
+        </main>
+
+        <script>
+            document.getElementById('categoryForm').addEventListener('submit', function (event) {
+                let isValid = true;
+
+                // Clear previous error messages
+                document.getElementById('categoryNameError').textContent = '';
+                document.getElementById('descriptionError').textContent = '';
+
+                // Validate category name
+                const categoryName = document.getElementById('categoryName');
+                if (categoryName.value.trim() === "") {
+                    isValid = false;
+                    document.getElementById('categoryNameError').textContent = 'Category name cannot be empty.';
+                } else if (categoryName.value.trim().length < 3) {
+                    isValid = false;
+                    document.getElementById('categoryNameError').textContent = 'Category name must be at least 3 characters long.';
+                }
+
+                // Validate description
+                const description = document.getElementById('description');
+                if (description.value.trim() === "") {
+                    isValid = false;
+                    document.getElementById('descriptionError').textContent = 'Description cannot be empty.';
+                } else if (description.value.trim().length < 10) {
+                    isValid = false;
+                    document.getElementById('descriptionError').textContent = 'Description must be at least 10 characters long.';
+                }
+
+                if (!isValid) {
+                    event.preventDefault(); // Prevent form submission if validation fails
+                }
+            });
+        </script>
+
+        <script>
+            let buttons = document.querySelectorAll(".block-unblock");
+            for (let i = 0; i < buttons.length; i++) {
+                buttons[i].addEventListener("click", function (event) {
+                    event.preventDefault();
+                    let statusCell = this.closest("tr").querySelector(".status");
+                    if (buttons[i].textContent.trim() === "Block") {
+                        statusCell.textContent = "Inactive";
+                        buttons[i].textContent = "Unblock";
+                        buttons[i].classList.remove("btn-warning");
+                        buttons[i].classList.add("btn-success");
+                    } else {
+                        statusCell.textContent = "Active";
+                        buttons[i].textContent = "Block";
+                        buttons[i].classList.remove("btn-success");
+                        buttons[i].classList.add("btn-warning");
+                    }
+                });
+            }
+        </script>
+
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+        <!-- <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+        <script>//unlist category sweetalert
+            function confirmBlock(catId) {
+                // Show SweetAlert confirmation dialog
+                Swal.fire({
+                    title: "Are you sure?",
+                    text: "You are about to unlist this category!",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#fffff",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "Yes, unlist it!",
+                    showCancelButton: true,
+                    confirmButtonColor: '#00d9ff', // Neon blue confirm button
+                    cancelButtonColor: '#888', // Gray cancel button
+                    confirmButtonText: 'Yes, unlist it!',
+                    cancelButtonText: 'No, keep it',
+                    background: 'rgba(30, 30, 30, 0.7)', // Semi-transparent light background
+                    color: '#fff', // White text color
+                    iconColor: '#f27474', // Custom icon color (reddish)
+                    backdrop: `
+        rgba(0,0,0,0.6)
+        url("path/to/your/loading-spinner.gif")
+        left top
+        no-repeat
+      `, // Semi-transparent backdrop with a loading spinner
+                    width: '900px',
+                    padding: '2rem',
+                    heightAuto: false,
+                    height: '400px',
+                    customClass: {
+                        popup: 'custom-swal-popup premium-modal',
+                        loader: 'custom-swal-loader',
+                    }
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = "/admin/unlistCategory?id=" + catId;
+                    }
+                });
+            }
+        </script>
+
+        <script>//confirm unblock sweetalert
+            function confirmUnblock(catId) {
+                // Show SweetAlert confirmation dialog
+                Swal.fire({
+                    title: "Are you sure?",
+                    text: "You want to list this category?",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: " #088178;",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "Yes, list it!",
+                    showCancelButton: true,
+                    confirmButtonColor: '#00d9ff', // Neon blue confirm button
+                    cancelButtonColor: '#888', // Gray cancel button
+                    confirmButtonText: 'Yes, list it!',
+                    cancelButtonText: 'No, keep it',
+                    background: 'rgba(30, 30, 30, 0.7)', // Semi-transparent light background
+                    color: '#fff', // White text color
+                    iconColor: '#f27474', // Custom icon color (reddish)
+                    backdrop: `
+        rgba(0,0,0,0.6)
+        url("path/to/your/loading-spinner.gif")
+        left top
+        no-repeat
+      `, // Semi-transparent backdrop with a loading spinner
+                    width: '900px',
+                    padding: '2rem',
+                    heightAuto: false,
+                    height: '400px',
+                    customClass: {
+                        popup: 'custom-swal-popup premium-modal',
+                        loader: 'custom-swal-loader',
+                    }
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // If user confirms, redirect to unblockuser route with userId
+                        window.location.href = "/admin/listCategory?id=" + catId;
+                    }
+                });
+            }
+        </script> -->
+
+        <script>//script of swal if category is already existing in the editing
+            function getQueryParam(param) {
+                const urlParams = new URLSearchParams(window.location.search)
+                return urlParams.get(param)
+            }
+            function removeUrlParams() {
+                const url = window.location.protocol + '//' + window.location.host + window.location.pathname
+                window.history.pushState({ path: url }, '', url)
+            }
+            const message = getQueryParam('message')
+            const type = getQueryParam('type')
+            if (message) {
+                Swal.fire({
+                    title: type == 'success' ? 'Success!' : 'Error!',
+                    text: message,
+                    icon: type,
+                    confirmButtonText: 'OK'
+                }).then(() => {
+                    removeUrlParams()
+                })
+            }//
+        </script>
+
+        <script src="adminAssets/js/vendors/jquery-3.6.0.min.js"></script>
+        <script src="adminAssets/js/vendors/bootstrap.bundle.min.js"></script>
+        <script src="adminAssets/js/vendors/select2.min.js"></script>
+        <script src="adminAssets/js/vendors/perfect-scrollbar.js"></script>
+        <script src="adminAssets/js/vendors/jquery.fullscreen.min.js"></script>
+        <!-- Main Script -->
+        <script src="adminAssets/js/main.js" type="text/javascript"></script>
+</body>
+
+
+<!-- Mirrored from wp.alithemes.com/html/evara/evara-backend/page-categories.html by HTTrack Website Copier/3.x [XR&CO'2014], Sun, 01 Aug 2021 15:33:21 GMT -->
+
+</html>

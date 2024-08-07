@@ -1,0 +1,223 @@
+<!DOCTYPE HTML>
+<html lang="en">
+
+
+<!-- Mirrored from wp.alithemes.com/html/evara/evara-backend/page-sellers-list.html by HTTrack Website Copier/3.x [XR&CO'2014], Sun, 01 Aug 2021 15:33:23 GMT -->
+
+<head>
+    <meta charset="utf-8">
+    <title>WatchVault UserManagement</title>
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta property="og:title" content="">
+    <meta property="og:type" content="">
+    <meta property="og:url" content="">
+    <meta property="og:image" content="">
+    <!-- Favicon -->
+    <!-- <link rel="shortcut icon" type="image/x-icon" href="adminAssets/imgs/theme/favicon.svg"> -->
+    <!-- Template CSS -->
+    <link href="adminAssets/css/main.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+</head>
+
+<body>
+    <div class="screen-overlay"></div>
+    <%- include('./partials/adminAside.ejs') %>
+        <main class="main-wrap">
+            <%- include('./partials/adminHeader.ejs') %>
+                <section class="content-main">
+                    <div class="content-header">
+                        <h2 class="content-title">Users list</h2>
+                        <div>
+                            <!-- <a href="#" class="btn btn-primary"><i class="material-icons md-plus"></i> Create new</a> -->
+                        </div>
+                    </div>
+                    <div class="card mb-4">
+                        <header class="card-header">
+                            <div class="row gx-3">
+                                <div class="col-lg-4 col-md-6 me-auto">
+                                    <!-- <input type="text" placeholder="Search..." class="form-control"> -->
+                                </div>
+                                <!-- <div class="col-lg-2 col-md-3 col-6">
+                            <select class="form-select">
+                                <option>Status</option>
+                                <option>Active</option>
+                                <option>Disabled</option>
+                                <option>Show all</option>
+                            </select>
+                        </div> -->
+                                <!-- <div class="col-lg-2 col-md-3 col-6">
+                            <select class="form-select">
+                                <option>Show 20</option>
+                                <option>Show 30</option>
+                                <option>Show 40</option>
+                            </select>
+                        </div> -->
+                            </div>
+                        </header> <!-- card-header end// -->
+                        <div class="card-body">
+                            <% if(locals.users){ %>
+                                <div class="table-responsive">
+                                    <table class="table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>User</th>
+                                                <th>Email</th>
+                                                <th>Mobile</th>
+                                                <th class="text-end"> Action </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <% for(let i=0; i<users.length; i++){ %>
+                                                <tr>
+                                                    <td width="40%">
+                                                        <a href="#" class="itemside">
+                                                            <div class="info pl-3">
+                                                                <h6 class="mb-0 ">
+                                                                    <%= users[i].name %>
+                                                                </h6>
+                                                            </div>
+                                                        </a>
+                                                    </td>
+                                                    <td>
+                                                        <%= users[i].email %>
+                                                    </td>
+                                                    <td>
+                                                        <%= users[i].mobile %>
+                                                    </td>
+                                                    <td class="text-end">
+                                                        <% if(users[i].is_active){ %>
+                                                            <a href="#" onclick="confirmBlock('<%=users[i]._id%>')"
+                                                                class="btn btn-sm btn-danger rounded font-sm mt-15">Block</a>
+                                                            <% } else { %>
+                                                                <a href="#"
+                                                                    onclick="confirmUnblock('<%=users[i]._id%>')"
+                                                                    class="btn btn-sm btn-brand rounded font-sm mt-15">Unblock</a>
+                                                                <% } %>
+                                                    </td>
+                                                </tr>
+                                                <% } %>
+                                                    <!-- </tbody> -->
+                                                    <!-- </table> table-responsive.// -->
+                                </div>
+                                <% } %>
+                        </div> <!-- card-body end// -->
+                    </div> <!-- card end// -->
+
+                    <!-- <div class="pagination-area mt-15 mb-50">
+                <nav aria-label="Page navigation example">
+                    <ul class="pagination justify-content-start">
+                        <li class="page-item active"><a class="page-link" href="#">01</a></li>
+                        <li class="page-item"><a class="page-link" href="#">02</a></li>
+                        <li class="page-item"><a class="page-link" href="#">03</a></li>
+                        <li class="page-item"><a class="page-link dot" href="#">...</a></li>
+                        <li class="page-item"><a class="page-link" href="#">16</a></li>
+                        <li class="page-item"><a class="page-link" href="#"><i class="material-icons md-chevron_right"></i></a></li>
+                    </ul>
+                </nav>
+            </div> -->
+                </section> <!-- content-main end// -->
+                <footer class="main-footer font-xs">
+
+                </footer>
+        </main>
+
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script>//confirm block sweetalert
+            function confirmBlock(userId) {
+                // Show SweetAlert confirmation dialog
+                Swal.fire({
+                    title: "Are you sure?",
+                    text: "You are able to revert this!",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#fffff",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "Yes, block it!",
+                    showCancelButton: true,
+                    confirmButtonColor: '#00d9ff', // Neon blue confirm button
+                    cancelButtonColor: '#888', // Gray cancel button
+                    confirmButtonText: 'Yes, block it!',
+                    cancelButtonText: 'No, keep it',
+                    background: 'rgba(30, 30, 30, 0.7)', // Semi-transparent light background
+                    color: '#fff', // White text color
+                    iconColor: '#f27474', // Custom icon color (reddish)
+                    backdrop: `
+        rgba(0,0,0,0.6)
+        url("path/to/your/loading-spinner.gif")
+        left top
+        no-repeat
+      `, // Semi-transparent backdrop with a loading spinner
+                    width: '900px',
+                    padding: '2rem',
+                    heightAuto: false,
+                    height: '400px',
+                    customClass: {
+                        popup: 'custom-swal-popup premium-modal',
+                        loader: 'custom-swal-loader',
+                    }
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // If user confirms, redirect to blockProduct route with userId
+                        window.location.href = "/admin/blockUser?id=" + userId;
+                    }
+                });
+            }
+        </script>
+
+        <script>//confirm unblock sweetalert
+            function confirmUnblock(userId) {
+                // Show SweetAlert confirmation dialog
+                Swal.fire({
+                    title: "Are you sure?",
+                    text: "You want to unblock this user?",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: " #088178;",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "Yes, unblock it!",
+                    showCancelButton: true,
+                    confirmButtonColor: '#00d9ff', // Neon blue confirm button
+                    cancelButtonColor: '#888', // Gray cancel button
+                    confirmButtonText: 'Yes, Unblock it!',
+                    cancelButtonText: 'No, keep it',
+                    background: 'rgba(30, 30, 30, 0.7)', // Semi-transparent light background
+                    color: '#fff', // White text color
+                    iconColor: '#f27474', // Custom icon color (reddish)
+                    backdrop: `
+        rgba(0,0,0,0.6)
+        url("path/to/your/loading-spinner.gif")
+        left top
+        no-repeat
+      `, // Semi-transparent backdrop with a loading spinner
+                    width: '900px',
+                    padding: '2rem',
+                    heightAuto: false,
+                    height: '400px',
+                    customClass: {
+                        popup: 'custom-swal-popup premium-modal',
+                        loader: 'custom-swal-loader',
+                    }
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // If user confirms, redirect to unblockuser route with userId
+                        window.location.href = "/admin/unblockUser?id=" + userId;
+                    }
+                });
+            }
+        </script>
+
+        <script src="adminAssets/js/vendors/jquery-3.6.0.min.js"></script>
+        <script src="adminAssets/js/vendors/bootstrap.bundle.min.js"></script>
+        <script src="adminAssets/js/vendors/select2.min.js"></script>
+        <script src="adminAssets/js/vendors/perfect-scrollbar.js"></script>
+        <script src="adminAssets/js/vendors/jquery.fullscreen.min.js"></script>
+        <!-- Main Script -->
+        <script src="adminAssets/js/main.js" type="text/javascript"></script>
+</body>
+
+
+<!-- Mirrored from wp.alithemes.com/html/evara/evara-backend/page-sellers-list.html by HTTrack Website Copier/3.x [XR&CO'2014], Sun, 01 Aug 2021 15:33:23 GMT -->
+
+</html>
