@@ -1,5 +1,10 @@
 const User = require('../model/userModel')
 const bcrypt = require('bcrypt')
+const orders = require('../model/orderModel')
+const cart = require('../model/cartModel')
+const product = require('../model/productModel')
+const address = require('../model/addressModel')
+
 
 const adminLogin = async (req, res) => {
     try {
@@ -81,6 +86,28 @@ const unblockUser = async (req, res) => {
     }
 }
 
+const loadOrders = async(req, res)=>{
+    try {
+        const userId = req.session.user
+        const Orders = await orders.find()
+        res.render('orders',{orders: Orders})
+    } catch (error) {
+        console.log(error);
+        
+    }
+}
+
+const listOrders = async (req, res) => {
+    try {
+        const orderData = await orders.find({ orderVerified: true });
+        const users = await User.find({ is_admin: false }); // Users data retrieved
+        res.render('orders', { orders: orderData, users: users }); // Ensure 'users' is passed correctly
+    } catch (error) {
+        console.log(error);
+    }
+};
+
+
 
 module.exports = {
     adminLogin,
@@ -89,5 +116,7 @@ module.exports = {
     adminLogout,
     loadUsers,
     blockUser,
-    unblockUser
+    unblockUser,
+    loadOrders,
+    listOrders
 }

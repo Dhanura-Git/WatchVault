@@ -4,6 +4,7 @@ const User = require('../model/userModel')
 const isLogin = async (req, res, next) => {
     try {
         if (req.session.user) {
+            console.log(req.session.user, 'from middleware');
             next()
         } else {
             res.redirect('/login')

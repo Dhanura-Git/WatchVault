@@ -43,7 +43,7 @@
     }
 
     button[type="submit"] {
-      background-color: #302eab;
+      background-color: #06af93;
       color: white;
       padding: 12px 20px;
       border: none;
@@ -53,11 +53,11 @@
     }
 
     button[type="submit"]:hover {
-      background-color: #403490;
+      background-color: #0dd1b7;
     }
 
     button#resendButton {
-      background-color: #28b163;
+      background-color: #717fe0;
       color: white;
       padding: 12px 20px;
       border: none;
@@ -89,12 +89,19 @@
       <input type="text" id="otpCode" name="otp" pattern="\d*" maxlength="4" minlength="4" required>
       <button type="submit">Verify OTP Code</button>
       <button type="button" id="resendButton" onclick="resendOTP()" disabled>Resend OTP</button>
-      <h3 class="text-center text-danger" style="color: red;" id="loginErrorMessage">
-        <%=locals.errmessage ? errmessage : '' %>
-      </h3>
-      <h3 class="text-center text-success" id="loginSuccessMessage">
-        <%=locals.successMessage ? successMessage : '' %>
-      </h3>
+      
+      <% if (typeof errmessage !== 'undefined' && errmessage) { %>
+        <h3 class="text-center text-danger" style="color: red;" id="loginErrorMessage">
+          <%= errmessage %>
+        </h3>
+        <% } %>
+  
+        <% if (typeof successMessage !== 'undefined' && successMessage) { %>
+        <h3 class="text-center text-success" id="loginSuccessMessage">
+          <%= successMessage %>
+        </h3>
+        <% } %>
+      
       <div id="timerDisplay"></div>
     </form>
   </div>

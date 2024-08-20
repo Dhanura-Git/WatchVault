@@ -1,5 +1,6 @@
 const mongoose = require('mongoose')
 require('dotenv').config()
+const path = require('path')
 
 const express = require('express')
 const app = express()
@@ -20,9 +21,7 @@ mongoose.connect(process.env.mongoUrl)
         console.log(error)
     })
 
-const path = require('path')
 app.use('/public', express.static('public'));
-
 
 //for parsing body data
 app.use(express.json())
@@ -49,6 +48,14 @@ app.use((err, req, res, next) => {
 })
 
 const PORT = process.env.PORT
+
+app.use((req, res, next) => {
+    if (req.url.startsWith('/admin')) {
+        res.status(404).render('admin404')
+    } else {
+        res.status(404).render('404')
+    }
+})
 
 app.listen(PORT, () => {
     console.log(`Server listening at http://localhost:${PORT}`)

@@ -2,6 +2,7 @@ const User = require('../model/userModel')
 const bcrypt = require('bcrypt')
 const nodemailer = require('nodemailer')
 const product = require('../model/productModel')
+const Otp = require('../model/otpModel')
 
 
 const loadHome = async (req, res) => {
@@ -24,7 +25,6 @@ const userSignup = async (req, res) => {
 
 const insertUser = async (req, res) => {
     try {
-        const { name, email, mobile, password, } = req.body
 
         //checking if the email already exist or not
         const existEmail = await User.findOne({ email: req.body.email })
@@ -35,10 +35,10 @@ const insertUser = async (req, res) => {
         //checking if the password and confirm password is the same
         if (req.body.password === req.body.cPassword) {
             const userData = {
-                name: name,
-                email: email,
-                mobile: mobile,
-                password: password
+                name: req.body.name,
+                email: req.body.email,
+                mobile: req.body.mobile,
+                password: req.body.password
             }
             req.session.data = userData
             res.redirect('/getOtp')
@@ -50,6 +50,7 @@ const insertUser = async (req, res) => {
 
 const getOtp = async (req, res) => {
     try {
+        
         const transporter = nodemailer.createTransport({
             service: 'Gmail',
             auth: {
@@ -59,8 +60,8 @@ const getOtp = async (req, res) => {
         })
         let randomOtp = Math.floor(1000 + Math.random() * 9000).toString()
         req.session.otp = randomOtp
-        console.log(req.session.data, 'asdfgh');
         const { email, name } = req.session.data
+        console.log(req.session.data, 'asdfgh');
         const mailOptions = {
             from: process.env.EMAIL,
             to: email,
@@ -103,6 +104,8 @@ const verifyOtp = async (req, res) => {
             } else {
                 res.render('signUp', { message: 'error' })
             }
+        } else {
+            res.render('otp', { errmessage: 'Enter a valid OTP'})
         }
     } catch (error) {
         console.log(error);
@@ -164,26 +167,14 @@ const loadShop = async (req, res) => {
 const productDetails = async (req, res) => {
     try {
         const proId = req.query.id
-        console.log(proId, 'sdfghfkjf');
         const prodData = await product.findOne({ _id: proId })
-        console.log(prodData, 'sdkjf');
-        res.render('productDetails', { prodData })
+        res.render('productDetails', { prodData }) 
     } catch (error) {
         console.log(error);
-    }
+    } 
 }
 
-const loadProfile = async(req, res)=>{
-    try {
-        const userId = req.session.user
-        const Iamuser = req.session.user
-        const userData = await User.findOne({_id: userId})
-        const cartData = await User.findOne({userId: userId})
-        res.render('userprofile', {user: req.session.user,userData,Iamuser})
-    } catch (error) {
-        console.log(error)
-    }
-}
+
 
 module.exports = {
     loadHome,
@@ -195,6 +186,5 @@ module.exports = {
     verifyUser,
     userLogout,
     loadShop,
-    productDetails,
-    loadProfile
+    productDetails
 }

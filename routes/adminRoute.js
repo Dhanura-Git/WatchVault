@@ -43,15 +43,7 @@ adminRoute.get('/userManagement', adminAuth.isLogin, adminController.loadUsers)
 adminRoute.get('/blockUser', adminAuth.isLogin, adminController.blockUser)
 adminRoute.get('/unblockUser', adminAuth.isLogin, adminController.unblockUser)
 
-
-
-
-
-
-
-
-
-
+adminRoute.get('/loadOrders', adminAuth.isLogin, adminController.loadOrders)
 
 
 

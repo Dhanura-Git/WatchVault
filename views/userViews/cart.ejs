@@ -1,36 +1,38 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
 	<title>WatchVault Shopping Cart</title>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-<!--===============================================================================================-->	
-	<link rel="icon" type="image/png" href="images/icons/favicon.png"/>
-<!--===============================================================================================-->
+	<!--===============================================================================================-->
+	<link rel="icon" type="image/png" href="images/icons/favicon.png" />
+	<!--===============================================================================================-->
 	<link rel="stylesheet" type="text/css" href="vendor/bootstrap/css/bootstrap.min.css">
-<!--===============================================================================================-->
+	<!--===============================================================================================-->
 	<link rel="stylesheet" type="text/css" href="fonts/font-awesome-4.7.0/css/font-awesome.min.css">
-<!--===============================================================================================-->
+	<!--===============================================================================================-->
 	<link rel="stylesheet" type="text/css" href="fonts/iconic/css/material-design-iconic-font.min.css">
-<!--===============================================================================================-->
+	<!--===============================================================================================-->
 	<link rel="stylesheet" type="text/css" href="fonts/linearicons-v1.0.0/icon-font.min.css">
-<!--===============================================================================================-->
+	<!--===============================================================================================-->
 	<link rel="stylesheet" type="text/css" href="vendor/animate/animate.css">
-<!--===============================================================================================-->	
+	<!--===============================================================================================-->
 	<link rel="stylesheet" type="text/css" href="vendor/css-hamburgers/hamburgers.min.css">
-<!--===============================================================================================-->
+	<!--===============================================================================================-->
 	<link rel="stylesheet" type="text/css" href="vendor/animsition/css/animsition.min.css">
-<!--===============================================================================================-->
+	<!--===============================================================================================-->
 	<link rel="stylesheet" type="text/css" href="vendor/select2/select2.min.css">
-<!--===============================================================================================-->
+	<!--===============================================================================================-->
 	<link rel="stylesheet" type="text/css" href="vendor/perfect-scrollbar/perfect-scrollbar.css">
-<!--===============================================================================================-->
+	<!--===============================================================================================-->
 	<link rel="stylesheet" type="text/css" href="css/util.css">
 	<link rel="stylesheet" type="text/css" href="css/main.css">
-<!--===============================================================================================-->
+	<!--===============================================================================================-->
 </head>
+
 <body class="animsition">
-	
+
 	<!-- Header -->
 	<header class="header-v4">
 		<!-- Header desktop -->
@@ -64,8 +66,8 @@
 
 			<div class="wrap-menu-desktop how-shadow1">
 				<nav class="limiter-menu-desktop container">
-					
-					<!-- Logo desktop -->		
+
+					<!-- Logo desktop -->
 					<a href="/home" class="logo">
 						<img src="images/icons/logo-01.png" alt="IMG-LOGO">
 					</a>
@@ -75,56 +77,41 @@
 						<ul class="main-menu">
 							<li>
 								<a href="/home">Home</a>
-								<!-- <ul class="sub-menu">
-									<li><a href="index.html">Homepage 1</a></li>
-									<li><a href="home-02.html">Homepage 2</a></li>
-									<li><a href="home-03.html">Homepage 3</a></li>
-								</ul> -->
 							</li>
 
 							<li>
 								<a href="/shop">Shop</a>
 							</li>
-
-							<!-- <li class="label1" data-label1="hot">
-								<a href="shoping-cart.html">Features</a>
-							</li>
-
 							<li>
-								<a href="blog.html">Blog</a>
+								<a href="/profile">Profile</a>
 							</li>
-
-							<li>
-								<a href="about.html">About</a>
-							</li>
-
-							<li>
-								<a href="contact.html">Contact</a>
-							</li> -->
 						</ul>
-					</div>	
+					</div>
 
 					<!-- Icon header -->
 					<div class="wrap-icon-header flex-w flex-r-m">
-						<div class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 js-show-modal-search">
+						<!-- <div class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 js-show-modal-search">
 							<i class="zmdi zmdi-search"></i>
-						</div>
+						</div> -->
 
-						<div class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti js-show-cart" data-notify="2">
+						<a href="/loadCart"
+							class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti js-show-cart"
+							data-notify="2">
 							<i class="zmdi zmdi-shopping-cart"></i>
-						</div>
+						</a>
 
-						<a href="#" class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti" data-notify="0">
+						<a href="#" class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti"
+							data-notify="0">
 							<i class="zmdi zmdi-favorite-outline"></i>
 						</a>
 					</div>
 				</nav>
-			</div>	
+			</div>
 		</div>
 
 		<!-- Header Mobile -->
 		<div class="wrap-header-mobile">
-			<!-- Logo moblie -->		
+			<!-- Logo moblie -->
 			<div class="logo-mobile">
 				<a href="index.html"><img src="images/icons/logo-01.png" alt="IMG-LOGO"></a>
 			</div>
@@ -135,11 +122,13 @@
 					<i class="zmdi zmdi-search"></i>
 				</div>
 
-				<div class="icon-header-item cl2 hov-cl1 trans-04 p-r-11 p-l-10 icon-header-noti js-show-cart" data-notify="2">
+				<div class="icon-header-item cl2 hov-cl1 trans-04 p-r-11 p-l-10 icon-header-noti js-show-cart"
+					data-notify="2">
 					<i class="zmdi zmdi-shopping-cart"></i>
 				</div>
 
-				<a href="#" class="dis-block icon-header-item cl2 hov-cl1 trans-04 p-r-11 p-l-10 icon-header-noti" data-notify="0">
+				<a href="#" class="dis-block icon-header-item cl2 hov-cl1 trans-04 p-r-11 p-l-10 icon-header-noti"
+					data-notify="0">
 					<i class="zmdi zmdi-favorite-outline"></i>
 				</a>
 			</div>
@@ -236,173 +225,102 @@
 	</header>
 
 	<!-- Cart -->
-	<div class="wrap-header-cart js-panel-cart">
-		<div class="s-full js-hide-cart"></div>
-
-		<div class="header-cart flex-col-l p-l-65 p-r-25">
-			<div class="header-cart-title flex-w flex-sb-m p-b-8">
-				<span class="mtext-103 cl2">
-					Your Cart
-				</span>
-
-				<div class="fs-35 lh-10 cl2 p-lr-5 pointer hov-cl1 trans-04 js-hide-cart">
-					<i class="zmdi zmdi-close"></i>
-				</div>
-			</div>
-			
-			<div class="header-cart-content flex-w js-pscroll">
-				<ul class="header-cart-wrapitem w-full">
-					<li class="header-cart-item flex-w flex-t m-b-12">
-						<div class="header-cart-item-img">
-							<img src="images/item-cart-01.jpg" alt="IMG">
-						</div>
-
-						<div class="header-cart-item-txt p-t-8">
-							<a href="#" class="header-cart-item-name m-b-18 hov-cl1 trans-04">
-								White Shirt Pleat
-							</a>
-
-							<span class="header-cart-item-info">
-								1 x $19.00
-							</span>
-						</div>
-					</li>
-
-					<li class="header-cart-item flex-w flex-t m-b-12">
-						<div class="header-cart-item-img">
-							<img src="images/item-cart-02.jpg" alt="IMG">
-						</div>
-
-						<div class="header-cart-item-txt p-t-8">
-							<a href="#" class="header-cart-item-name m-b-18 hov-cl1 trans-04">
-								Converse All Star
-							</a>
-
-							<span class="header-cart-item-info">
-								1 x $39.00
-							</span>
-						</div>
-					</li>
-
-					<li class="header-cart-item flex-w flex-t m-b-12">
-						<div class="header-cart-item-img">
-							<img src="images/item-cart-03.jpg" alt="IMG">
-						</div>
-
-						<div class="header-cart-item-txt p-t-8">
-							<a href="#" class="header-cart-item-name m-b-18 hov-cl1 trans-04">
-								Nixon Porter Leather
-							</a>
-
-							<span class="header-cart-item-info">
-								1 x $17.00
-							</span>
-						</div>
-					</li>
-				</ul>
-				
-				<div class="w-full">
-					<div class="header-cart-total w-full p-tb-40">
-						Total: $75.00
-					</div>
-
-					<div class="header-cart-buttons flex-w w-full">
-						<a href="shoping-cart.html" class="flex-c-m stext-101 cl0 size-107 bg3 bor2 hov-btn3 p-lr-15 trans-04 m-r-8 m-b-10">
-							View Cart
-						</a>
-
-						<a href="shoping-cart.html" class="flex-c-m stext-101 cl0 size-107 bg3 bor2 hov-btn3 p-lr-15 trans-04 m-b-10">
-							Check Out
-						</a>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
 
 
 	<!-- breadcrumb -->
 	<div class="container">
 		<div class="bread-crumb flex-w p-l-25 p-r-15 p-t-30 p-lr-0-lg">
-			<a href="index.html" class="stext-109 cl8 hov-cl1 trans-04">
+			<a href="/home" class="stext-109 cl8 hov-cl1 trans-04">
 				Home
 				<i class="fa fa-angle-right m-l-9 m-r-10" aria-hidden="true"></i>
 			</a>
 
-			<span class="stext-109 cl4">
-				Shoping Cart
-			</span>
+			<a href="/loadCart" class="stext-109 cl4">
+				Shopping Cart
+			</a>
 		</div>
 	</div>
-		
 
-	<!-- Shoping Cart -->
+
+	<!-- Shopping Cart -->
 	<form class="bg0 p-t-75 p-b-85">
 		<div class="container">
 			<div class="row">
-				<div class="col-lg-10 col-xl-7 m-lr-auto m-b-50">
+				<div class="col-lg-14 col-xl-10 m-lr-auto m-b-50">
 					<div class="m-l-25 m-r--38 m-lr-0-xl">
 						<div class="wrap-table-shopping-cart">
 							<table class="table-shopping-cart">
 								<tr class="table_head">
 									<th class="column-1">Product</th>
-									<th class="column-2"></th>
-									<th class="column-3">Price</th>
-									<th class="column-4">Quantity</th>
-									<th class="column-5">Total</th>
+									<th class="column-2">Product Name</th>
+									<th class="column-3">Stock</th>
+									<th class="column-4">Price</th>
+									<th class="column-5">Quantity</th>
+									<th class="column-6">Total</th>
+									<th class="column-7">Delete</th>
 								</tr>
 
-								<tr class="table_row">
-									<td class="column-1">
-										<div class="how-itemcart1">
-											<img src="images/item-cart-04.jpg" alt="IMG">
-										</div>
-									</td>
-									<td class="column-2">Fresh Strawberries</td>
-									<td class="column-3">$ 36.00</td>
-									<td class="column-4">
-										<div class="wrap-num-product flex-w m-l-auto m-r-0">
-											<div class="btn-num-product-down cl8 hov-btn3 trans-04 flex-c-m">
-												<i class="fs-16 zmdi zmdi-minus"></i>
-											</div>
-
-											<input class="mtext-104 cl3 txt-center num-product" type="number" name="num-product1" value="1">
-
-											<div class="btn-num-product-up cl8 hov-btn3 trans-04 flex-c-m">
-												<i class="fs-16 zmdi zmdi-plus"></i>
-											</div>
-										</div>
-									</td>
-									<td class="column-5">$ 36.00</td>
-								</tr>
-
-								<tr class="table_row">
-									<td class="column-1">
-										<div class="how-itemcart1">
-											<img src="images/item-cart-05.jpg" alt="IMG">
-										</div>
-									</td>
-									<td class="column-2">Lightweight Jacket</td>
-									<td class="column-3">$ 16.00</td>
-									<td class="column-4">
-										<div class="wrap-num-product flex-w m-l-auto m-r-0">
-											<div class="btn-num-product-down cl8 hov-btn3 trans-04 flex-c-m">
-												<i class="fs-16 zmdi zmdi-minus"></i>
-											</div>
-
-											<input class="mtext-104 cl3 txt-center num-product" type="number" name="num-product2" value="1">
-
-											<div class="btn-num-product-up cl8 hov-btn3 trans-04 flex-c-m">
-												<i class="fs-16 zmdi zmdi-plus"></i>
-											</div>
-										</div>
-									</td>
-									<td class="column-5">$ 16.00</td>
-								</tr>
+								<% if(locals.cartData) { %>
+									<% var grandTotal=0 %>
+										<% for(let i=0; i<cartData.product.length; i++) { %>
+											<tr class="table_row">
+												<td class="column-1">
+													<div class="how-itemcart1">
+														<a href="/productDetails?id=<%= cartData.product[i].productId._id %>">
+															<img src="/public/uploads/<%= cartData.product[i].productId.images[0] %>"
+																alt="">
+														</a>
+													</div>
+												</td>
+												<th class="column-2">
+													<%= cartData.product[i].productId.productName %>
+												</th>
+												<td class="column-3">
+													<%= cartData.product[i].productId.stock %>
+												</td>
+												<td class="column-4">
+													<%= cartData.product[i].productId.price %>
+												</td>
+												<td class="column-5">
+													<div style="display: flex; align-items: center;">
+														<button id="minusBtn_<%= cartData.product[i].productId._id %>"
+															style="background-color: #717fe0	; color: white; border: none; padding: 10px; cursor: pointer; font-size: 16px; border-radius: 5px; margin: 0 5px; transition: background-color 0.3s ease;"
+															onclick="decrease('<%= cartData.product[i].productId._id %>')">
+															<i class="fa fa-minus"></i>
+														</button>
+														<input min="1" max="100"
+															id="quantity_<%= cartData.product[i].productId._id %>"
+															value="<%= cartData.product[i].quantity %>" type="number"
+															readonly
+															style="width: 50px; text-align: center; border: 1px solid #ccc; border-radius: 5px; padding: 5px; font-size: 16px; margin: 0 5px;">
+														<button id="plusBtn_<%= cartData.product[i].productId._id %>"
+															style="background-color: #717fe0	; color: white; border: none; padding: 10px; cursor: pointer; font-size: 16px; border-radius: 5px; margin: 0 5px; transition: background-color 0.3s ease;"
+															onclick="increase('<%= cartData.product[i].productId._id %>')">
+															<i class="fa fa-plus"></i>
+														</button>
+													</div>
+												</td>
+												<td class="column-6">
+													<span id="total_<%= cartData.product[i].productId._id %>">
+														<%= cartData.product[i].price * cartData.product[i].quantity %>
+													</span>
+												</td>
+												<% let total = cartData.product[i].price * cartData.product[i].quantity %>
+												<% grandTotal += total %>
+												<td class="column-7">
+                                                    <a href="#" onclick="deleteItem('<%= cartData.product[i].productId._id %>')">
+                                                        <i class="fa fa-trash-o"></i>
+                                                    </a>
+                                                </td>
+											</tr>
+										<% } %>
 							</table>
+							
+					
+
 						</div>
 
-						<div class="flex-w flex-sb-m bor15 p-t-18 p-b-15 p-lr-40 p-lr-15-sm">
+						<!-- <div class="flex-w flex-sb-m bor15 p-t-18 p-b-15 p-lr-40 p-lr-15-sm">
 							<div class="flex-w flex-m m-r-20 m-tb-5">
 								<input class="stext-104 cl2 plh4 size-117 bor13 p-lr-20 m-r-10 m-tb-5" type="text" name="coupon" placeholder="Coupon Code">
 									
@@ -411,294 +329,287 @@
 								</div>
 							</div>
 
-							<div class="flex-c-m stext-101 cl2 size-119 bg8 bor13 hov-btn3 p-lr-15 trans-04 pointer m-tb-10">
+							<a href="/updateCart"
+								class="flex-c-m stext-101 cl2 size-119 bg8 bor13 hov-btn3 p-lr-15 trans-04 pointer m-tb-10">
 								Update Cart
-							</div>
-						</div>
+							</a>
+						</div> -->
 					</div>
 				</div>
 
-				<div class="col-sm-10 col-lg-7 col-xl-5 m-lr-auto m-b-50">
-					<div class="bor10 p-lr-40 p-t-30 p-b-40 m-l-63 m-r-40 m-lr-0-xl p-lr-15-sm">
-						<h4 class="mtext-109 cl2 p-b-30">
-							Cart Totals
-						</h4>
-
-						<div class="flex-w flex-t bor12 p-b-13">
-							<div class="size-208">
-								<span class="stext-110 cl2">
-									Subtotal:
-								</span>
-							</div>
-
-							<div class="size-209">
-								<span class="mtext-110 cl2">
-									$79.65
-								</span>
-							</div>
-						</div>
-
-						<div class="flex-w flex-t bor12 p-t-15 p-b-30">
-							<div class="size-208 w-full-ssm">
-								<span class="stext-110 cl2">
-									Shipping:
-								</span>
-							</div>
-
-							<div class="size-209 p-r-18 p-r-0-sm w-full-ssm">
-								<p class="stext-111 cl6 p-t-2">
-									There are no shipping methods available. Please double check your address, or contact us if you need any help.
-								</p>
-								
-								<div class="p-t-15">
-									<span class="stext-112 cl8">
-										Calculate Shipping
-									</span>
-
-									<div class="rs1-select2 rs2-select2 bor8 bg0 m-b-12 m-t-9">
-										<select class="js-select2" name="time">
-											<option>Select a country...</option>
-											<option>USA</option>
-											<option>UK</option>
-										</select>
-										<div class="dropDownSelect2"></div>
-									</div>
-
-									<div class="bor8 bg0 m-b-12">
-										<input class="stext-111 cl8 plh3 size-111 p-lr-15" type="text" name="state" placeholder="State /  country">
-									</div>
-
-									<div class="bor8 bg0 m-b-22">
-										<input class="stext-111 cl8 plh3 size-111 p-lr-15" type="text" name="postcode" placeholder="Postcode / Zip">
-									</div>
-									
-									<div class="flex-w">
-										<div class="flex-c-m stext-101 cl2 size-115 bg8 bor13 hov-btn3 p-lr-15 trans-04 pointer">
-											Update Totals
-										</div>
-									</div>
-										
-								</div>
-							</div>
-						</div>
-
-						<div class="flex-w flex-t p-t-27 p-b-33">
-							<div class="size-208">
-								<span class="mtext-101 cl2">
-									Total:
-								</span>
-							</div>
-
-							<div class="size-209 p-t-1">
-								<span class="mtext-110 cl2">
-									$79.65
-								</span>
-							</div>
-						</div>
-
-						<button class="flex-c-m stext-101 cl0 size-116 bg3 bor14 hov-btn3 p-lr-15 trans-04 pointer">
-							Proceed to Checkout
-						</button>
-					</div>
-				</div>
 			</div>
+			<!-- cart table end -->
+
+			<div class="col-sm-10 col-lg-7 col-xl-5 m-lr-auto m-b-50">
+				<div class="bor10 p-lr-40 p-t-30 p-b-40 m-l-63 m-r-40 m-lr-0-xl p-lr-15-sm">
+					<h4 class="mtext-109 cl2 p-b-30">
+						Cart Totals
+					</h4>
+
+					<div class="flex-w flex-t bor12 p-b-13">
+						<div class="size-208">
+							<span class="stext-110 cl2">
+								Total
+							</span>
+						</div>
+
+						<div class="size-209">
+							<span class="mtext-110 cl2">
+								₹ <%= grandTotal %>
+							</span>
+						</div>
+
+					</div>
+					<% } %>
+
+					<!-- <div class="flex-w flex-t bor12 p-t-15 p-b-30">
+						<div class="size-208 w-full-ssm">
+							<span class="stext-110 cl2">
+								Shipping:
+							</span>
+						</div>
+
+						<div class="size-209 p-r-18 p-r-0-sm w-full-ssm">
+							<p class="stext-111 cl6 p-t-2">
+								There are no shipping methods available. Please double check your address, or contact us
+								if you need any help.
+							</p>
+
+							<div class="p-t-15">
+								<span class="stext-112 cl8">
+									Calculate Shipping
+								</span>
+
+								<div class="rs1-select2 rs2-select2 bor8 bg0 m-b-12 m-t-9">
+									<select class="js-select2" name="time">
+										<option>Select a country...</option>
+										<option>USA</option>
+										<option>UK</option>
+									</select>
+									<div class="dropDownSelect2"></div>
+								</div>
+
+								<div class="bor8 bg0 m-b-12">
+									<input class="stext-111 cl8 plh3 size-111 p-lr-15" type="text" name="state"
+										placeholder="State /  country">
+								</div>
+
+								<div class="bor8 bg0 m-b-22">
+									<input class="stext-111 cl8 plh3 size-111 p-lr-15" type="text" name="postcode"
+										placeholder="Postcode / Zip">
+								</div>
+
+								<div class="flex-w">
+									<div
+										class="flex-c-m stext-101 cl2 size-115 bg8 bor13 hov-btn3 p-lr-15 trans-04 pointer">
+										Update Totals
+									</div>
+								</div>
+
+							</div>
+						</div> -->
+				</div>
+
+				<!-- <div class="flex-w flex-t p-t-27 p-b-33">
+						<div class="size-208">
+							<span class="mtext-101 cl2">
+								Total:
+							</span>
+						</div>
+
+						<div class="size-209 p-t-1">
+							<span class="mtext-110 cl2">
+								$79.65
+							</span>
+						</div>
+					</div> -->
+					<a class="flex-c-m stext-101 cl0 size-116 bg3 bor14 hov-btn3 p-lr-15 trans-04 pointer" href="/checkout">Proceed to Checkout</a>
+			</div>
+		</div>
 		</div>
 	</form>
-		
-	
-		
 
-	<!-- Footer -->
-	<footer class="bg3 p-t-75 p-b-32">
-		<div class="container">
-			<div class="row">
-				<div class="col-sm-6 col-lg-3 p-b-50">
-					<h4 class="stext-301 cl0 p-b-30">
-						Categories
-					</h4>
 
-					<ul>
-						<li class="p-b-10">
-							<a href="#" class="stext-107 cl7 hov-cl1 trans-04">
-								Women
-							</a>
-						</li>
+	<%- include('./userPartials/footer.ejs') %>
 
-						<li class="p-b-10">
-							<a href="#" class="stext-107 cl7 hov-cl1 trans-04">
-								Men
-							</a>
-						</li>
 
-						<li class="p-b-10">
-							<a href="#" class="stext-107 cl7 hov-cl1 trans-04">
-								Shoes
-							</a>
-						</li>
-
-						<li class="p-b-10">
-							<a href="#" class="stext-107 cl7 hov-cl1 trans-04">
-								Watches
-							</a>
-						</li>
-					</ul>
-				</div>
-
-				<div class="col-sm-6 col-lg-3 p-b-50">
-					<h4 class="stext-301 cl0 p-b-30">
-						Help
-					</h4>
-
-					<ul>
-						<li class="p-b-10">
-							<a href="#" class="stext-107 cl7 hov-cl1 trans-04">
-								Track Order
-							</a>
-						</li>
-
-						<li class="p-b-10">
-							<a href="#" class="stext-107 cl7 hov-cl1 trans-04">
-								Returns 
-							</a>
-						</li>
-
-						<li class="p-b-10">
-							<a href="#" class="stext-107 cl7 hov-cl1 trans-04">
-								Shipping
-							</a>
-						</li>
-
-						<li class="p-b-10">
-							<a href="#" class="stext-107 cl7 hov-cl1 trans-04">
-								FAQs
-							</a>
-						</li>
-					</ul>
-				</div>
-
-				<div class="col-sm-6 col-lg-3 p-b-50">
-					<h4 class="stext-301 cl0 p-b-30">
-						GET IN TOUCH
-					</h4>
-
-					<p class="stext-107 cl7 size-201">
-						Any questions? Let us know in store at 8th floor, 379 Hudson St, New York, NY 10018 or call us on (+1) 96 716 6879
-					</p>
-
-					<div class="p-t-27">
-						<a href="#" class="fs-18 cl7 hov-cl1 trans-04 m-r-16">
-							<i class="fa fa-facebook"></i>
-						</a>
-
-						<a href="#" class="fs-18 cl7 hov-cl1 trans-04 m-r-16">
-							<i class="fa fa-instagram"></i>
-						</a>
-
-						<a href="#" class="fs-18 cl7 hov-cl1 trans-04 m-r-16">
-							<i class="fa fa-pinterest-p"></i>
-						</a>
-					</div>
-				</div>
-
-				<div class="col-sm-6 col-lg-3 p-b-50">
-					<h4 class="stext-301 cl0 p-b-30">
-						Newsletter
-					</h4>
-
-					<form>
-						<div class="wrap-input1 w-full p-b-4">
-							<input class="input1 bg-none plh1 stext-107 cl7" type="text" name="email" placeholder="email@example.com">
-							<div class="focus-input1 trans-04"></div>
-						</div>
-
-						<div class="p-t-18">
-							<button class="flex-c-m stext-101 cl0 size-103 bg1 bor1 hov-btn2 p-lr-15 trans-04">
-								Subscribe
-							</button>
-						</div>
-					</form>
-				</div>
-			</div>
-
-			<div class="p-t-40">
-				<div class="flex-c-m flex-w p-b-18">
-					<a href="#" class="m-all-1">
-						<img src="images/icons/icon-pay-01.png" alt="ICON-PAY">
-					</a>
-
-					<a href="#" class="m-all-1">
-						<img src="images/icons/icon-pay-02.png" alt="ICON-PAY">
-					</a>
-
-					<a href="#" class="m-all-1">
-						<img src="images/icons/icon-pay-03.png" alt="ICON-PAY">
-					</a>
-
-					<a href="#" class="m-all-1">
-						<img src="images/icons/icon-pay-04.png" alt="ICON-PAY">
-					</a>
-
-					<a href="#" class="m-all-1">
-						<img src="images/icons/icon-pay-05.png" alt="ICON-PAY">
-					</a>
-				</div>
-
-				<p class="stext-107 cl6 txt-center">
-					<!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
-Copyright &copy;<script>document.write(new Date().getFullYear());</script> All rights reserved | Made with <i class="fa fa-heart-o" aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank">Colorlib</a> &amp; distributed by <a href="https://themewagon.com" target="_blank">ThemeWagon</a>
-<!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
-
-				</p>
-			</div>
+		<!-- Back to top -->
+		<div class="btn-back-to-top" id="myBtn">
+			<span class="symbol-btn-back-to-top">
+				<i class="zmdi zmdi-chevron-up"></i>
+			</span>
 		</div>
-	</footer>
 
-
-	<!-- Back to top -->
-	<div class="btn-back-to-top" id="myBtn">
-		<span class="symbol-btn-back-to-top">
-			<i class="zmdi zmdi-chevron-up"></i>
-		</span>
-	</div>
-
-<!--===============================================================================================-->	
-	<script src="vendor/jquery/jquery-3.2.1.min.js"></script>
-<!--===============================================================================================-->
-	<script src="vendor/animsition/js/animsition.min.js"></script>
-<!--===============================================================================================-->
-	<script src="vendor/bootstrap/js/popper.js"></script>
-	<script src="vendor/bootstrap/js/bootstrap.min.js"></script>
-<!--===============================================================================================-->
-	<script src="vendor/select2/select2.min.js"></script>
-	<script>
-		$(".js-select2").each(function(){
-			$(this).select2({
-				minimumResultsForSearch: 20,
-				dropdownParent: $(this).next('.dropDownSelect2')
-			});
-		})
-	</script>
-<!--===============================================================================================-->
-	<script src="vendor/MagnificPopup/jquery.magnific-popup.min.js"></script>
-<!--===============================================================================================-->
-	<script src="vendor/perfect-scrollbar/perfect-scrollbar.min.js"></script>
-	<script>
-		$('.js-pscroll').each(function(){
-			$(this).css('position','relative');
-			$(this).css('overflow','hidden');
-			var ps = new PerfectScrollbar(this, {
-				wheelSpeed: 1,
-				scrollingThreshold: 1000,
-				wheelPropagation: false,
-			});
-
-			$(window).on('resize', function(){
-				ps.update();
+		<!--===============================================================================================-->
+		<script src="vendor/jquery/jquery-3.2.1.min.js"></script>
+		<!--===============================================================================================-->
+		<script src="vendor/animsition/js/animsition.min.js"></script>
+		<!--===============================================================================================-->
+		<script src="vendor/bootstrap/js/popper.js"></script>
+		<script src="vendor/bootstrap/js/bootstrap.min.js"></script>
+		<!--===============================================================================================-->
+		<script src="vendor/select2/select2.min.js"></script>
+		<script>
+			$(".js-select2").each(function () {
+				$(this).select2({
+					minimumResultsForSearch: 20,
+					dropdownParent: $(this).next('.dropDownSelect2')
+				});
 			})
-		});
-	</script>
-<!--===============================================================================================-->
-	<script src="js/main.js"></script>
+		</script>
+		<!--===============================================================================================-->
+		<script src="vendor/MagnificPopup/jquery.magnific-popup.min.js"></script>
+		<!--===============================================================================================-->
+		<script src="vendor/perfect-scrollbar/perfect-scrollbar.min.js"></script>
+		<script>
+			$('.js-pscroll').each(function () {
+				$(this).css('position', 'relative');
+				$(this).css('overflow', 'hidden');
+				var ps = new PerfectScrollbar(this, {
+					wheelSpeed: 1,
+					scrollingThreshold: 1000,
+					wheelPropagation: false,
+				});
+
+				$(window).on('resize', function () {
+					ps.update();
+				})
+			});
+		</script>
+		<!--===============================================================================================-->
+		<script src="js/main.js"></script>
+
+		<script>
+			function updateCartItem(productId, quantityChange) {
+				return fetch(`/updatecart`, {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+					},
+					body: JSON.stringify({ quantity: quantityChange, productId: productId }),
+				})
+					.then(response => {
+						if (!response.ok) {
+							return response.json().then(error => {
+								throw new Error(error.error || 'Unknown error');
+							});
+						}
+						return response.json();
+					});
+			}
+
+			function decrease(productId) {
+				const quantityInput = document.getElementById(`quantity_${productId}`);
+				let currentQuantity = parseInt(quantityInput.value, 10);
+
+				if (currentQuantity > 1) {
+					updateCartItem(productId, -1)
+						.then(() => {
+							currentQuantity--;
+							quantityInput.value = currentQuantity;
+							updateTotal(productId, currentQuantity);
+							updateSubtotal();
+						})
+						.catch(error => {
+							Swal.fire({
+								icon: 'error',
+								title: 'Oops...',
+								text: error.message,
+							});
+						});
+				}
+			}
+
+			function increase(productId) {
+				const quantityInput = document.getElementById(`quantity_${productId}`);
+				let currentQuantity = parseInt(quantityInput.value, 10);
+
+				updateCartItem(productId, 1)
+					.then(() => {
+						currentQuantity++;
+						quantityInput.value = currentQuantity;
+						updateTotal(productId, currentQuantity);
+						updateSubtotal();
+					})
+					.catch(error => {
+						Swal.fire({
+							icon: 'error',
+							title: 'Oops...',
+							text: error.message,
+						});
+					});
+			}
+
+			function updateTotal(productId, quantity) {
+				const priceElement = document.getElementById(`price_${productId}`);
+				const offerPriceElement = priceElement.querySelector('.discounted-price');
+
+				let price = parseFloat(offerPriceElement ? offerPriceElement.innerText.replace('₹', '') : priceElement.innerText.replace('₹', ''));
+				if (isNaN(price)) {
+					console.error(`Invalid price for product ${productId}`);
+					return;
+				}
+
+				const totalElement = document.getElementById(`total_${productId}`);
+				totalElement.innerText = ` ₹${(price * quantity).toFixed(2)}`;
+			}
+
+			function updateSubtotal() {
+				let subtotal = 0;
+				document.querySelectorAll('.product_total').forEach(itemTotalElement => {
+					const itemTotalText = itemTotalElement.innerText.replace(/[^\d.-]/g, '');
+					const itemTotal = parseFloat(itemTotalText);
+					if (isNaN(itemTotal)) {
+						console.error(`Invalid total for item: ${itemTotalText}`);
+						return;
+					}
+					subtotal += itemTotal;
+				});
+
+				const subtotalElement = document.getElementById('subtotal');
+				subtotalElement.innerText = ` ₹${subtotal.toFixed(2)}`;
+			}
+
+			function updateQuantity(productId) {
+				const quantityInput = document.getElementById(`quantity_${productId}`);
+				const currentQuantity = parseInt(quantityInput.value, 10);
+				if (isNaN(currentQuantity) || currentQuantity < 1) {
+					console.error(`Invalid quantity for product ${productId}`);
+					quantityInput.value = 1;
+					return;
+				}
+				updateCartItem(productId, currentQuantity);
+				updateTotal(productId, currentQuantity);
+				updateSubtotal();
+			}
+		</script>
+
+
+
+		<script>
+			function deleteItem(productId) {
+				console.log('Deleting product with ID:', productId);
+				fetch('/cartDelete', {
+					method: 'DELETE',
+					headers: {
+						'Content-Type': 'application/json'
+					},
+					body: JSON.stringify({ productId })
+				})
+					.then(response => {
+						if (response.ok) {
+							window.location.href = '/loadCart';
+							console.log('Product removed successfully');
+						} else {
+							console.error('Failed to remove product');
+						}
+					})
+					.catch(error => console.error('Error removing product:', error));
+			}
+
+
+		</script>
 
 </body>
+
 </html>
