@@ -46,100 +46,102 @@
 
     <style>
         body {
-     font-family: Arial, sans-serif;
-     background-color: #ffffff;
-     margin: 0;
-     padding: 0;
- }
- 
- .container {
-     max-width: 800px;
-     margin: 50px auto;
-     padding: 20px;
-     border-radius: 8px;
-     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
- }
- 
- .billing-details {
-     background-color: #fff;
-     padding: 20px;
-     border-radius: 8px;
-     width: 45%;
-     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-     transition: box-shadow 0.3s ease;
- }
- 
- .billing-details:hover {
-     box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
- }
- 
- .billing-details h3 {
-     margin-top: 0;
-     margin-bottom: 20px;
-     color: #333;
-     font-size: 24px;
-     text-align: center;
- }
- 
- .row {
-     margin: 0 -10px;
- }
- 
- .col-lg-6 {
-     padding: 0 10px;
- }
- 
- .default-form-box {
-     margin-bottom: 20px;
- }
- 
- label {
-     display: block;
-     margin-bottom: 5px;
-     color: #777;
-     font-weight: bold;
-     text-align: left; /* Align labels to the left */
- }
- 
- input[type="text"],
- input[type="tel"],
- select {
-     width: calc(100% - 20px); /* Adjusted width for input fields */
-     padding: 10px;
-     border: 1px solid #ccc;
-     border-radius: 5px;
-     box-sizing: border-box;
-     font-size: 16px;
- }
- 
- input[type="text"]:focus,
- input[type="tel"]:focus,
- select:focus {
-     outline: none;
-     border-color: #b19361;
- }
- 
- button {
-     padding: 10px 20px;
-     background-color: #717fe0;
-     color: #fff;
-     border: none;
-     border-radius: 5px;
-     cursor: pointer;
-     font-size: 16px;
-     transition: background-color 0.3s ease;
-     width: 100%;
- }
- 
- button:hover {
-     background-color: #7c8cf1;
- }
- 
- .Address {
-     text-align: center; /* Center align the content within each section */
- }
- 
-     </style>
+            font-family: Arial, sans-serif;
+            background-color: #ffffff;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .billing-details {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            width: 45%;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            transition: box-shadow 0.3s ease;
+        }
+
+        .billing-details:hover {
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .billing-details h3 {
+            margin-top: 0;
+            margin-bottom: 20px;
+            color: #333;
+            font-size: 24px;
+            text-align: center;
+        }
+
+        .row {
+            margin: 0 -10px;
+        }
+
+        .col-lg-6 {
+            padding: 0 10px;
+        }
+
+        .default-form-box {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #777;
+            font-weight: bold;
+            text-align: left;
+            /* Align labels to the left */
+        }
+
+        input[type="text"],
+        input[type="tel"],
+        select {
+            width: calc(100% - 20px);
+            /* Adjusted width for input fields */
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+
+        input[type="text"]:focus,
+        input[type="tel"]:focus,
+        select:focus {
+            outline: none;
+            border-color: #b19361;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #717fe0;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+            width: 100%;
+        }
+
+        button:hover {
+            background-color: #7c8cf1;
+        }
+
+        .Address {
+            text-align: center;
+            /* Center align the content within each section */
+        }
+    </style>
 
 </head>
 
@@ -183,13 +185,13 @@
                             <!-- Start Header Action Link -->
                             <ul class="header-action-link action-color--black action-hover-color--white">
                                 <li>
-                                    <a href="#offcanvas-wishlish">
+                                    <a href="/wishlist">
                                         <i class="icon-heart"></i>
                                         <span class="item-count">3</span>
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="/loadCart" >
+                                    <a href="/loadCart">
                                         <i class="icon-bag"></i>
                                         <!-- <span class="item-count">3</span> -->
                                     </a>
@@ -242,7 +244,7 @@
                                 </a>
                             </li>
                             <li>
-                                <a href="#offcanvas-wishlish">
+                                <a href="/wishlist">
                                     <i class="icon-heart"></i>
                                     <span class="item-count">3</span>
                                 </a>
@@ -527,18 +529,20 @@
     <!-- Offcanvas Overlay -->
     <div class="offcanvas-overlay"></div>
 
-    
+
 
     <!-- address form  -->
     <div class="container">
-        <form id="addaddress" method="post" action="/editAddress?id=<%= addressEdit.Address[0]._id %>"  onsubmit="return validateForm()" novalidate>
+        <form id="addaddress" method="post" action="/editAddress?id=<%= addressEdit.Address[0]._id %>"
+            onsubmit="return validateForm()" novalidate>
             <div class="Address">
                 <h3> Edit Address Details </h3>
                 <div class="row">
                     <div class="col-lg-12">
                         <div class="default-form-box">
                             <label for="name">Name <span>*</span></label>
-                            <input type="text" id="name" name="name" value="<%= addressEdit.Address[0].name %>" required>
+                            <input type="text" id="name" name="name" value="<%= addressEdit.Address[0].name %>"
+                                required>
                             <span id="nameError" class="error-message"></span>
                         </div>
                         <div class="default-form-box">
@@ -547,40 +551,47 @@
                                 <option value="home">Home</option>
                                 <option value="work">Work</option>
                             </select>
-                        </div> 
+                        </div>
                         <div class="default-form-box">
                             <label for="address"> Address <span>*</span></label>
-                            <input type="text" id="address" name="address" value="<%= addressEdit.Address[0].address %>" required>
+                            <input type="text" id="address" name="address" value="<%= addressEdit.Address[0].address %>"
+                                required>
                             <span id="addressError" class="error-message"></span>
                         </div>
                         <div class="default-form-box">
                             <label for="city">City <span>*</span></label>
-                            <input type="text" id="city" name="city" value="<%= addressEdit.Address[0].city %>" required>
+                            <input type="text" id="city" name="city" value="<%= addressEdit.Address[0].city %>"
+                                required>
                             <span id="cityError" class="error-message"></span>
                         </div>
                         <div class="default-form-box">
-                            <label for="state">State  <span>*</span></label>
-                            <input type="text" id="state" name="state" value="<%= addressEdit.Address[0].state %>" required>
+                            <label for="state">State <span>*</span></label>
+                            <input type="text" id="state" name="state" value="<%= addressEdit.Address[0].state %>"
+                                required>
                             <span id="stateError" class="error-message"></span>
                         </div>
                         <div class="default-form-box">
                             <label for="country"> Country <span>*</span></label>
-                            <input type="text" id="country" name="country" value="<%= addressEdit.Address[0].country %>" required>
+                            <input type="text" id="country" name="country" value="<%= addressEdit.Address[0].country %>"
+                                required>
                             <span id="countryError" class="error-message"></span>
                         </div>
                         <div class="default-form-box">
                             <label for="pincode">Pincode<span>*</span></label>
-                            <input type="text" id="pincode" name="pincode" value="<%= addressEdit.Address[0].pincode %>" required>
+                            <input type="text" id="pincode" name="pincode" value="<%= addressEdit.Address[0].pincode %>"
+                                required>
                             <span id="pincodeError" class="error-message"></span>
                         </div>
                         <div class="default-form-box">
-                            <label for="phone">Phone <span>*</span></label>
-                            <input type="text" id="phone" name="phone" value="<%= addressEdit.Address[0].phone %>" required>
+                            <label for="phone">Phone Number <span>*</span></label>
+                            <input type="text" id="phone" name="phone" value="<%= addressEdit.Address[0].phone %>"
+                                required>
                             <span id="phoneError" class="error-message"></span>
                         </div>
                         <div class="default-form-box">
-                            <label for="altphone">Alt Phone <span>*</span></label>
-                            <input type="text" id="altphone" name="altphone" value="<%= addressEdit.Address[0].altphone %>" required>
+                            <label for="altphone">Alternate Phone Number<span>*</span></label>
+                            <input type="text" id="altphone" name="altphone"
+                                value="<%= addressEdit.Address[0].altphone %>" required>
                             <span id="altphoneError" class="error-message"></span>
                         </div>
                     </div>
@@ -589,7 +600,7 @@
             </div>
         </form>
     </div>
-    
+
     <br><br><br><br>
 
     <!-- Start Footer Section -->

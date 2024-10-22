@@ -43,7 +43,27 @@ adminRoute.get('/userManagement', adminAuth.isLogin, adminController.loadUsers)
 adminRoute.get('/blockUser', adminAuth.isLogin, adminController.blockUser)
 adminRoute.get('/unblockUser', adminAuth.isLogin, adminController.unblockUser)
 
-adminRoute.get('/loadOrders', adminAuth.isLogin, adminController.loadOrders)
+adminRoute.get('/loadOrders', adminAuth.isLogin, adminController.listOrders)
+adminRoute.get('/order-Details', adminAuth.isLogin, adminController.orderDetails)
+adminRoute.patch('/updateOrder', adminAuth.isLogin, adminController.updateOrder)
+
+adminRoute.get('/coupon', adminAuth.isLogin, adminController.listCoupon)
+adminRoute.post('/addCoupon', adminAuth.isLogin, adminController.addCoupon)
+adminRoute.delete('/deleteCoupon', adminAuth.isLogin, adminController.deleteCoupon)
+
+adminRoute.get('/offer', adminAuth.isLogin, productController.offerLoad)
+adminRoute.post('/offerAdd', adminAuth.isLogin, productController.offerAdd)
+adminRoute.get('/deleteOffer', adminAuth.isLogin, productController.deleteOffer)
+
+adminRoute.get('/salesReport', adminAuth.isLogin, adminController.salesReport)
+adminRoute.get('/salesDaily', adminAuth.isLogin, adminController.dailySales)
+adminRoute.get('/salesWeekly', adminAuth.isLogin, adminController.weeklySales)
+adminRoute.get('/salesMonthly', adminAuth.isLogin, adminController.monthlySales)
+adminRoute.get('/salesYearly', adminAuth.isLogin, adminController.yearlySales)
+adminRoute.get('/getAllSales', adminAuth.isLogin, adminController.getAllSales)
+adminRoute.get('/customDate', adminAuth.isLogin, adminController.getCustomDate)
+adminRoute.get('/downloadPdf', adminAuth.isLogin, adminController.downloadPdf)
+adminRoute.get('/downloadExcel', adminAuth.isLogin, adminController.downloadExcel)
 
 
 

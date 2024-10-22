@@ -107,6 +107,16 @@
                                                 </option>
                                                 <% } %>
                                         </select>
+                                        <hr>
+                                        <label class="form-label">Offers</label>
+                                        <select class="form-check" name="offer" id="offer">
+                                            <% for(let i=0; i < offers.length; i++) { %>
+                                                <option value="<%= offers[i]._id %>" <%=offers[i]._id==products.offer
+                                                    ? 'selected' : '' %>>
+                                                    <%= offers[i].offerName %>
+                                                </option>
+                                                <% } %>
+                                        </select>
                                         <div id="categoryError" class="text-danger"></div>
                                     </div>
                                 </div> <!-- card end// -->

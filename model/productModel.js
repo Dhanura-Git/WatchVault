@@ -32,7 +32,15 @@ const productSchema = mongoose.Schema({
     },
     is_Active: {
         type: Boolean,
-        default: false
+        default: true
+    },
+    offer: {
+        type: mongoose.Schema.Types.ObjectId, 
+        ref: 'offer',
+        default: null
+    },
+    originalPrice:{
+        type: Number
     }
 })
 

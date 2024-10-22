@@ -26,7 +26,14 @@ const userSchema = mongoose.Schema({
         type: Boolean,
         default: true
     },
-
+    token: {
+        type: String,
+        default: ''
+    },
+    Coupon: [{
+        couponCode: String,
+        usagecount: Number
+    }]
 
 }, {
     timestamp: true

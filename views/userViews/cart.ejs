@@ -28,6 +28,10 @@
 	<!--===============================================================================================-->
 	<link rel="stylesheet" type="text/css" href="css/util.css">
 	<link rel="stylesheet" type="text/css" href="css/main.css">
+	<!-- Include SweetAlert2 CSS and JS -->
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
+
 	<!--===============================================================================================-->
 </head>
 
@@ -96,12 +100,12 @@
 
 						<a href="/loadCart"
 							class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti js-show-cart"
-							data-notify="2">
+							data-notify="<%= cartLength %>">
 							<i class="zmdi zmdi-shopping-cart"></i>
 						</a>
 
-						<a href="#" class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti"
-							data-notify="0">
+						<a href="/wishlist" class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti"
+							data-notify="<%= wishlistCount %>">
 							<i class="zmdi zmdi-favorite-outline"></i>
 						</a>
 					</div>
@@ -253,42 +257,41 @@
 								<tr class="table_head">
 									<th class="column-1">Product</th>
 									<th class="column-2">Product Name</th>
-									<th class="column-3">Stock</th>
-									<th class="column-4">Price</th>
-									<th class="column-5">Quantity</th>
-									<th class="column-6">Total</th>
-									<th class="column-7">Delete</th>
+									<th class="column-3">Price</th>
+									<th class="column-4">Quantity</th>
+									<th class="column-5">Total</th>
+									<th class="column-6">Delete</th>
 								</tr>
 
 								<% if(locals.cartData) { %>
 									<% var grandTotal=0 %>
 										<% for(let i=0; i<cartData.product.length; i++) { %>
 											<tr class="table_row">
-												<td class="column-1">
-													<div class="how-itemcart1">
-														<a href="/productDetails?id=<%= cartData.product[i].productId._id %>">
-															<img src="/public/uploads/<%= cartData.product[i].productId.images[0] %>"
-																alt="">
-														</a>
-													</div>
+												<td class="product_thumb">
+													<a
+														href="/productDetails?id=<%= cartData.product[i].productId._id %>">
+														<img width="140px"
+															src="/public/uploads/<%= cartData.product[i].productId.images[0] %>"
+															alt="">
+													</a>
 												</td>
 												<th class="column-2">
-													<%= cartData.product[i].productId.productName %>
+													<a
+														href="/productDetails?id=<%= cartData.product[i].productId._id %>">
+														<%= cartData.product[i].productId.productName %>
+													</a>
 												</th>
 												<td class="column-3">
-													<%= cartData.product[i].productId.stock %>
-												</td>
-												<td class="column-4">
 													<%= cartData.product[i].productId.price %>
 												</td>
-												<td class="column-5">
+												<td class="column-4">
 													<div style="display: flex; align-items: center;">
 														<button id="minusBtn_<%= cartData.product[i].productId._id %>"
 															style="background-color: #717fe0	; color: white; border: none; padding: 10px; cursor: pointer; font-size: 16px; border-radius: 5px; margin: 0 5px; transition: background-color 0.3s ease;"
 															onclick="decrease('<%= cartData.product[i].productId._id %>')">
 															<i class="fa fa-minus"></i>
 														</button>
-														<input min="1" max="100"
+														<input min="1" max="3"
 															id="quantity_<%= cartData.product[i].productId._id %>"
 															value="<%= cartData.product[i].quantity %>" type="number"
 															readonly
@@ -300,23 +303,36 @@
 														</button>
 													</div>
 												</td>
-												<td class="column-6">
+												<td class="column-5">
 													<span id="total_<%= cartData.product[i].productId._id %>">
 														<%= cartData.product[i].price * cartData.product[i].quantity %>
 													</span>
 												</td>
-												<% let total = cartData.product[i].price * cartData.product[i].quantity %>
-												<% grandTotal += total %>
-												<td class="column-7">
-                                                    <a href="#" onclick="deleteItem('<%= cartData.product[i].productId._id %>')">
-                                                        <i class="fa fa-trash-o"></i>
-                                                    </a>
-                                                </td>
+												<% let total=cartData.product[i].price * cartData.product[i].quantity %>
+													<% grandTotal +=total %>
+														<td class="column-6">
+															<a href="#"
+																onclick="deleteItem('<%= cartData.product[i].productId._id %>')">
+																<i class="fa fa-trash-o"></i>
+															</a>
+														</td>
 											</tr>
-										<% } %>
+											<% } %>
 							</table>
+							<% if (locals.message) { %>
+								<script>
+									Swal.fire({
+										icon: 'warning',
+										title: 'Unavailable Products',
+										text: '<%= locals.message %>',
+										confirmButtonText: 'OK'
+									});
+								</script>
+								<% req.session.message = null; // Clear the message after displaying it %>
+							<% } %>
 							
-					
+
+
 
 						</div>
 
@@ -362,7 +378,7 @@
 					</div>
 					<% } %>
 
-					<!-- <div class="flex-w flex-t bor12 p-t-15 p-b-30">
+						<!-- <div class="flex-w flex-t bor12 p-t-15 p-b-30">
 						<div class="size-208 w-full-ssm">
 							<span class="stext-110 cl2">
 								Shipping:
@@ -423,7 +439,9 @@
 							</span>
 						</div>
 					</div> -->
-					<a class="flex-c-m stext-101 cl0 size-116 bg3 bor14 hov-btn3 p-lr-15 trans-04 pointer" href="/checkout">Proceed to Checkout</a>
+				<a class="flex-c-m stext-101 cl0 size-116 bg3 bor14 hov-btn3 p-lr-15 trans-04 pointer"
+					href="/checkout">Proceed to Checkout
+				</a>
 			</div>
 		</div>
 		</div>
@@ -478,10 +496,10 @@
 		</script>
 		<!--===============================================================================================-->
 		<script src="js/main.js"></script>
-
+ 
 		<script>
 			function updateCartItem(productId, quantityChange) {
-				return fetch(`/updatecart`, {
+				return fetch(`/updateCart`, {
 					method: 'POST',
 					headers: {
 						'Content-Type': 'application/json',
@@ -511,11 +529,11 @@
 							updateSubtotal();
 						})
 						.catch(error => {
-							Swal.fire({
-								icon: 'error',
-								title: 'Oops...',
-								text: error.message,
-							});
+							// Swal.fire({
+							// 	icon: 'error',
+							// 	title: 'Oops...',
+							// 	text: error.message,
+							// });
 						});
 				}
 			}
@@ -532,11 +550,11 @@
 						updateSubtotal();
 					})
 					.catch(error => {
-						Swal.fire({
-							icon: 'error',
-							title: 'Oops...',
-							text: error.message,
-						});
+						// Swal.fire({
+						// 	icon: 'error',
+						// 	title: 'Oops...',
+						// 	text: error.message,
+						// });
 					});
 			}
 
@@ -609,6 +627,7 @@
 
 
 		</script>
+		
 
 </body>
 

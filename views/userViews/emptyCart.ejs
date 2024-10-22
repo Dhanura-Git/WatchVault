@@ -84,18 +84,18 @@
 
                             <!-- Start Header Action Link -->
                             <ul class="header-action-link action-color--black action-hover-color--white">
-                                <li>
-                                    <a href="#offcanvas-wishlish">
-                                        <i class="icon-heart"></i>
-                                        <span class="item-count">3</span>
-                                    </a>
-                                </li>   
-                                <li>
+                                <!-- <li>
                                     <a href="/loadCart">
                                         <i class="icon-bag"></i>
-                                        <!-- <span class="item-count">3</span> -->
+                                        <span class="item-count">  </span>
                                     </a>
                                 </li>
+                                <li>
+                                    <a href="/wishlist">
+                                        <i class="icon-heart"></i>
+                                        <span class="item-count">  </span>
+                                    </a>
+                                </li> -->
                                 <li>
                                     <!-- <a href="#offcanvas-about" class="offacnvas offside-about offcanvas-toggle">
                                         <i class="icon-menu"></i>
@@ -139,7 +139,7 @@
                                 </a>
                             </li>
                             <li>
-                                <a href="#offcanvas-wishlish" class="offcanvas-toggle">
+                                <a href="/wishlist" class="offcanvas-toggle">
                                     <i class="icon-heart"></i>
                                     <span class="item-count">3</span>
                                 </a>
@@ -505,27 +505,6 @@
     <!-- Offcanvas Overlay -->
     <div class="offcanvas-overlay"></div>
 
-    <!-- ...:::: Start Breadcrumb Section:::... -->
-    <div class="breadcrumb-section breadcrumb-bg-color--white">
-        <div class="breadcrumb-wrapper">
-            <div class="container">
-                <div class="row">
-                    <div class="col-12">
-                        <h3 class="breadcrumb-title">Empty Cart</h3>
-                        <div class="breadcrumb-nav breadcrumb-nav-color--black breadcrumb-nav-hover-color--white">
-                            <nav aria-label="breadcrumb">
-                                <ul>
-                                    <li><a href="/home">Home</a></li>
-                                    <li><a href="/shop">Shop</a></li>
-                                    <li class="active" aria-current="page">Empty Cart</li>
-                                </ul>
-                            </nav>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div> <!-- ...:::: End Breadcrumb Section:::... -->
 
     <!-- ...::::Start About Us Center Section:::... -->
     <div class="empty-cart-section section-fluid">
@@ -535,11 +514,13 @@
                     <div class="col-12 col-md-10 offset-md-1 col-xl-6 offset-xl-3">
                         <div class="emptycart-content text-center">
                             <div class="image">
-                                <img class="img-fluid" src="assets/images/emprt-cart/empty-cart.png" alt="">
+                                <img class="img-fluid"
+                                    src="/public/userAssets/honoAsset/assets/images/emprt-cart/empty-cart.jpg" alt="">
                             </div>
                             <h4 class="title">Your Cart is Empty</h4>
-                            <h6 class="sub-title">Sorry Mate... No item Found inside your cart!</h6>
-                            <a href="/shop" class="btn btn-lg btn-white">Continue Shopping</a>
+                            <h6 class="sub-title">No item Found in your cart! <br> Explore more products in the shop
+                            </h6>
+                            <a href="/shop" class="btn btn-lg btn-secondary">Go to Shop</a>
                         </div>
                     </div>
                 </div>

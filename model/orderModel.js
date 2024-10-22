@@ -1,12 +1,16 @@
 const mongoose = require('mongoose')
 
 const orderSchema = mongoose.Schema({
-    product:{
+    product: {
         type: Array,
         required: true,
-        ref:'product'
+        ref: 'product'
     },
-    totalPrice:{
+    orderId: {
+        type: String,
+        required: true
+    },
+    totalPrice: {
         type: Number,
         required: true
     },
@@ -14,33 +18,38 @@ const orderSchema = mongoose.Schema({
         type: Array,
         required: true
     },
-    paymentMethod:{
+    paymentMethod: {
         type: String,
         required: true
     },
-    paymentStatus:{
+    paymentStatus: {
         type: String,
         required: true
     },
-    status:{
+    status: {
         type: String,
         required: true
     },
-    userId:{
+    userId: {
         type: String,
         required: true
     },
-    placed:{
+    placed: {
         type: Date,
         required: true
     },
-    date:{
+    date: {
         type: String
     },
-    orderVerified:{
+    orderVerified: {
         type: Boolean,
         default: true
+    },
+    coupon: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'coupon',
+        default: null
     }
 })
 
-module.exports = mongoose.model('order',orderSchema)
+module.exports = mongoose.model('order', orderSchema)

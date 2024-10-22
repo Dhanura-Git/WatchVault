@@ -3428,16 +3428,16 @@ fieldset:disabled .btn {
 
 .btn-warning {
   color: #000;
-  background-color: #fd8a14;
-  border-color: #fd8a14;
+  background-color: #fdca14;
+  border-color: #fdca14;
   -webkit-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 1px 1px rgba(0, 0, 0, 0.075);
           box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 1px 1px rgba(0, 0, 0, 0.075);
 }
 
 .btn-warning:hover {
   color: #000;
-  background-color: #fd9c37;
-  border-color: #fd962c;
+  background-color: #d8af1a;
+  border-color: #d8af1a;
 }
 
 .btn-check:focus + .btn-warning, .btn-warning:focus {

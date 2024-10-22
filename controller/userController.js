@@ -2,19 +2,27 @@ const User = require('../model/userModel')
 const bcrypt = require('bcrypt')
 const nodemailer = require('nodemailer')
 const product = require('../model/productModel')
+const Wishlist = require('../model/wishlistModel')
 const Otp = require('../model/otpModel')
+const randomString = require('randomstring')
+const Cart = require('../model/cartModel')
+const Category = require('../model/categoryModel')
+const Offer = require('../model/offerModel')
 
 
 const loadHome = async (req, res) => {
     try {
         const Iamuser = req.session.user
-        res.render('home', { Iamuser })
+        const cartData = await Cart.findOne({ userId: Iamuser })
+        const wishlistData = await Wishlist.findOne({ userId: Iamuser })
+        const cartCount = cartData ? cartData.product.length : 0
+        const wishlistCount = cartData ? wishlistData.product.length : 0
+        res.render('home', { Iamuser, cartData, wishlistData, cartCount, wishlistCount })
     } catch (error) {
         console.log(error)
     }
 }
 
-//function to render the signUp form
 const userSignup = async (req, res) => {
     try {
         res.render('signUp')
@@ -26,13 +34,11 @@ const userSignup = async (req, res) => {
 const insertUser = async (req, res) => {
     try {
 
-        //checking if the email already exist or not
         const existEmail = await User.findOne({ email: req.body.email })
 
         if (existEmail) {
             res.render('signUp', { message: 'Email is already registered. Sign in to your account' })
         }
-        //checking if the password and confirm password is the same
         if (req.body.password === req.body.cPassword) {
             const userData = {
                 name: req.body.name,
@@ -50,7 +56,6 @@ const insertUser = async (req, res) => {
 
 const getOtp = async (req, res) => {
     try {
-        
         const transporter = nodemailer.createTransport({
             service: 'Gmail',
             auth: {
@@ -61,7 +66,6 @@ const getOtp = async (req, res) => {
         let randomOtp = Math.floor(1000 + Math.random() * 9000).toString()
         req.session.otp = randomOtp
         const { email, name } = req.session.data
-        console.log(req.session.data, 'asdfgh');
         const mailOptions = {
             from: process.env.EMAIL,
             to: email,
@@ -105,7 +109,7 @@ const verifyOtp = async (req, res) => {
                 res.render('signUp', { message: 'error' })
             }
         } else {
-            res.render('otp', { errmessage: 'Enter a valid OTP'})
+            res.render('otp', { errmessage: 'Enter a valid OTP' })
         }
     } catch (error) {
         console.log(error);
@@ -122,17 +126,16 @@ const loginLoad = async (req, res) => {
 
 const verifyUser = async (req, res) => {
     try {
-        console.log(req.body, 'loginn');
-        const { email, password } = req.body
-        const userData = await User.findOne({ email: email })
+        const { email, password } = req.body;
+        const userData = await User.findOne({ email: email });
         if (userData) {
             const matchedPw = await bcrypt.compare(password, userData.password);
             if (matchedPw) {
-                if (userData.is_active) { //checking if the user is blocked
-                    req.session.user = userData._id
-                    res.redirect('/home')
-                } else {
-                    res.render('login', { message: 'Your account is currently blocked' });
+                if (userData.is_active) {
+                    req.session.user = userData._id;
+                    res.redirect('/home');
+                } else if (userData.is_active == false) {
+                    return res.render('login', { message: 'Your account is currently blocked' });
                 }
             } else {
                 res.render('login', { message: 'Incorrect password' });
@@ -140,9 +143,120 @@ const verifyUser = async (req, res) => {
         } else {
             res.render('login', { message: 'Please enter your valid email and password' });
         }
+    } catch (error) {
+        console.log(error)
     }
-    catch (error) {
+}
+
+const forgotPassword = async (req, res) => {
+    try {
+        const email = req.body.email
+
+        const userData = await User.findOne({ email: email })
+
+        if (userData) {
+            const randomstring = randomString.generate()
+            await User.updateOne({ email: email }, { $set: { token: randomstring } })
+            await getResetPassword(userData.name, userData.email, randomstring)
+            res.render('forgotPassword', { message: 'Please check your mail to reset password' })
+        } else {
+            throw new Error('User not found')
+        }
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+const loadForgotPassword = async (req, res) => {
+    try {
+        res.render('forgotPassword')
+    } catch (error) {
         console.log(error);
+
+    }
+}
+
+const getResetPassword = async (name, email, token) => {
+    try {
+        const transporter = nodemailer.createTransport({
+            host: 'smtp.gmail.com',
+            port: 587,
+            secure: false,
+            requireTLS: true,
+            auth: {
+                user: process.env.EMAIL,
+                pass: 'gpat alni nmro mspi'
+            }
+        })
+        const mailOptions = {
+            from: 'gpat alni nmro mspi',
+            to: email,
+            subject: 'Reset your password',
+            html: `<p> Hi ${name}, </p>
+                   <p> Please click on the following link to reset your password: </p>
+                   <a href=http://localhost:${process.env.PORT}/resetpassword?token=${token}> Reset Password </a>`
+        }
+        transporter.sendMail(mailOptions, function (error, info) {
+            if (error) {
+                console.log(error)
+            } else {
+                console.log('Mail sent', info.response)
+            }
+        })
+    } catch (error) {
+        console.log(error);
+
+    }
+}
+
+const resetPasswordPg = async (req, res) => {
+    try {
+        const token = req.query.token
+        res.render('resetPassword', { token })
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+const resetPassword = async (req, res) => {
+    try {
+        const { token, newpassword, confirmpassword } = req.body
+        if (newpassword !== confirmpassword) {
+            return res.status(400).send({ success: false, message: 'Passwords do not match' })
+        }
+        const user = await User.findOne({ token })
+        if (!user) {
+            return res.status(400).send({ success: false, message: 'Invalid token' })
+        }
+        const hashedPw = await bcrypt.hash(newpassword, 10)
+        user.password = hashedPw
+        user.token = undefined
+        await user.save()
+        res.redirect('/')
+    } catch (error) {
+        console.log(error);
+
+    }
+}
+
+const googleAut = async (req, res) => {
+    try {
+        const googleUser = req.user
+        console.log(googleUser,'googleUser in googleAut');
+        
+        const email = googleUser.emails[0].value
+        const user = await User.findOne({ email })
+        if (!user) {
+            res.redirect('/userSignup')
+        } 
+        if (user.is_active) {
+            req.session.user = user
+            res.redirect('/home');
+        } else if (user.is_active == false) {
+            return res.render('login', { message: 'Your account is currently blocked' });
+        }
+    } catch (error) {
+        console.log(error)
     }
 }
 
@@ -157,8 +271,42 @@ const userLogout = async (req, res) => {
 
 const loadShop = async (req, res) => {
     try {
-        const prodData = await product.find({ is_Active: true })
-        res.render('shop', { prodData })
+        const userId = req.session.user
+        const cart = await Cart.findOne({ userId: userId })
+        const cartCount = cart ? cart.product.length : 0
+        const wishlist = await Wishlist.findOne({ userId: userId })
+        const wishlistCount = wishlist ? wishlist.product.length : 0
+        const category = await Category.find()
+        const { categoryId, sortByName, sortByPrice, search } = req.query
+
+        const query = { is_Active: true }
+        if (categoryId) {
+            query.category = categoryId
+        }
+        if (search) {
+            query.productName = { $regex: '.*' + search + '.*', $options: 'i' }
+        }
+        let sortCriteria = {};
+
+        if (sortByPrice) {
+            sortCriteria.price = sortByPrice === 'price_asc' ? 1 : -1;
+        }
+        if (sortByName) {
+            sortCriteria.productName = sortByName === 'name_asc' ? 1 : -1;
+        }
+
+        const prodData = await product.find(query).sort(sortCriteria)
+
+        res.render('shop', {
+            prodData,
+            category,
+            sortByName,
+            sortByPrice,
+            search,
+            categoryId,
+            cartCount,
+            wishlistCount
+        })
     } catch (error) {
         console.log(error);
     }
@@ -166,13 +314,107 @@ const loadShop = async (req, res) => {
 
 const productDetails = async (req, res) => {
     try {
+        const user = req.session.user
         const proId = req.query.id
-        const prodData = await product.findOne({ _id: proId })
-        res.render('productDetails', { prodData }) 
+        const prodData = await product.findOne({ _id: proId }).populate('offer')
+        const cartData = await Cart.findOne({ userId: user })
+        const wishlistData = await Wishlist.findOne({ userId: user })
+        const cartCount = cartData ? cartData.product.length : 0
+        const wishlistCount = wishlistData ? wishlistData.product.length : 0
+        res.render('productDetails', { prodData, cartCount, wishlistCount })
     } catch (error) {
         console.log(error);
-    } 
+    }
 }
+
+const productToCart = async (req, res) => {
+    try {
+        const proId = req.query.id;
+        const prodData = await product.findOne({ _id: proId });
+
+        if (prodData) {
+            res.json({
+                success: true,
+                stock: prodData.stock,
+                product: prodData
+            });
+        } else {
+            res.json({
+                success: false,
+                message: 'Product not found'
+            });
+        }
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            success: false,
+            message: 'An error occurred while fetching product details'
+        });
+    }
+};
+
+const getWishlist = async (req, res) => {
+    try {
+        const user = req.session.user
+        const wishlist = await Wishlist.findOne({ userId: user }).populate('product.productId')
+        const wishlists = await Wishlist.findOne({ userId: user })
+        const wishlistCount = wishlist ? wishlist.product.length : 0
+        res.render('wishlist', { wishlist, wishlistCount })
+    } catch (error) {
+        console.log(error);
+
+    }
+}
+
+const addWishlist = async (req, res) => {
+    try {
+        const user = req.session.user;
+        const productId = req.query.id;
+
+
+        let wishlist = await Wishlist.findOne({ userId: user });
+        if (!wishlist) {
+            wishlist = new Wishlist({ userId: user, product: [] });
+        }
+
+        const existingProductIndex = wishlist.product.findIndex(item => item.productId.toString() === productId);
+        if (existingProductIndex !== -1) {
+            wishlist.product[existingProductIndex].quantity += 1;
+        } else {
+            wishlist.product.push({ productId, quantity: 1 });
+        }
+        await wishlist.save();
+        res.redirect('/wishlist')
+
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+
+const deleteWishlist = async (req, res) => {
+    try {
+        const user = req.session.user
+        const { productId } = req.body
+        const wishlist = await Wishlist.findOne({ userId: user })
+        if (!wishlist) {
+            console.log('No wishlist is found');
+            return res.status(400).send('Wishlist is not found')
+        }
+        const productIndex = wishlist.product.findIndex((item) => item.productId.toString() === productId)
+        if (productIndex !== -1) {
+            wishlist.product.splice(productIndex, 1)
+            await wishlist.save()
+            return res.status(200).send('Success')
+        } else {
+            return res.status(400).send('Product is not found in the wishlist')
+        }
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+
 
 
 
@@ -184,7 +426,17 @@ module.exports = {
     getOtp,
     verifyOtp,
     verifyUser,
+    forgotPassword,
+    loadForgotPassword,
+    getResetPassword,
+    resetPasswordPg,
+    resetPassword,
+    googleAut,
     userLogout,
     loadShop,
-    productDetails
+    productDetails,
+    productToCart,
+    getWishlist,
+    addWishlist,
+    deleteWishlist
 }

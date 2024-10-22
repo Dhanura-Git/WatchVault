@@ -89,20 +89,20 @@
       <input type="text" id="otpCode" name="otp" pattern="\d*" maxlength="4" minlength="4" required>
       <button type="submit">Verify OTP Code</button>
       <button type="button" id="resendButton" onclick="resendOTP()" disabled>Resend OTP</button>
-      
-      <% if (typeof errmessage !== 'undefined' && errmessage) { %>
+
+      <% if (typeof errmessage !=='undefined' && errmessage) { %>
         <h3 class="text-center text-danger" style="color: red;" id="loginErrorMessage">
           <%= errmessage %>
         </h3>
         <% } %>
-  
-        <% if (typeof successMessage !== 'undefined' && successMessage) { %>
-        <h3 class="text-center text-success" id="loginSuccessMessage">
-          <%= successMessage %>
-        </h3>
-        <% } %>
-      
-      <div id="timerDisplay"></div>
+
+          <% if (typeof successMessage !=='undefined' && successMessage) { %>
+            <h3 class="text-center text-success" id="loginSuccessMessage">
+              <%= successMessage %>
+            </h3>
+            <% } %>
+
+              <div id="timerDisplay"></div>
     </form>
   </div>
   <script src="script.js"></script>

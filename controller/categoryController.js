@@ -61,9 +61,7 @@ const editCategory = async (req, res) => {
 const categoryUnlist = async (req, res) => {
     try {
         const catId = req.query.id
-        console.log(catId, 'hi');
         const categoryUnlist = await category.findByIdAndUpdate(catId, { is_Active: false })
-        console.log(categoryUnlist, 'hii');
         res.redirect('/admin/category')
     } catch (error) {
         console.log(error);
@@ -73,9 +71,7 @@ const categoryUnlist = async (req, res) => {
 const categoryList = async (req, res) => {
     try {
         const catId = req.query.id
-        console.log(catId, 'hi');
         const categoryList = await category.findByIdAndUpdate(catId, { is_Active: true })
-        console.log(categoryList, 'hii');
         res.redirect('/admin/category')
     } catch (error) {
         console.log(error);

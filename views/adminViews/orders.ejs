@@ -71,69 +71,33 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                <tr>
-                                                    <!-- <td>452</td> -->
-                                                    <td><b>Devon Lane</b></td>
-                                                    <td>$948.55</td>
-                                                    <td><span class="badge rounded-pill alert-success">Received</span>
-                                                    </td>
-                                                    <td>07.05.2020</td>
-                                                    <td class="text-end">
-                                                        <a href="#" class="btn btn-md rounded font-sm">Detail</a>
-                                                        <div class="dropdown">
-                                                            <a href="#" data-bs-toggle="dropdown"
-                                                                class="btn btn-light rounded btn-sm font-sm"> <i
-                                                                    class="material-icons md-more_horiz"></i> </a>
-                                                            <div class="dropdown-menu">
-                                                                <a class="dropdown-item" href="#">View detail</a>
-                                                                <a class="dropdown-item" href="#">Edit info</a>
-                                                                <a class="dropdown-item text-danger" href="#">Delete</a>
-                                                            </div>
-                                                        </div> <!-- dropdown //end -->
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>789</td>
-                                                    <td><b>Guy Hawkins</b></td>
-                                                    <td>$0.00</td>
-                                                    <td><span class="badge rounded-pill alert-danger">Cancelled</span>
-                                                    </td>
-                                                    <td>25.05.2020</td>
-                                                    <td class="text-end">
-                                                        <a href="#" class="btn btn-md rounded font-sm">Detail</a>
-                                                        <div class="dropdown">
-                                                            <a href="#" data-bs-toggle="dropdown"
-                                                                class="btn btn-light rounded btn-sm font-sm"> <i
-                                                                    class="material-icons md-more_horiz"></i> </a>
-                                                            <div class="dropdown-menu">
-                                                                <a class="dropdown-item" href="#">View detail</a>
-                                                                <a class="dropdown-item" href="#">Edit info</a>
-                                                                <a class="dropdown-item text-danger" href="#">Delete</a>
-                                                            </div>
-                                                        </div> <!-- dropdown //end -->
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>478</td>
-                                                    <td><b>Leslie Alexander</b></td>
-                                                    <td>$293.01</td>
-                                                    <td><span class="badge rounded-pill alert-warning">Pending</span>
-                                                    </td>
-                                                    <td>18.05.2020</td>
-                                                    <td class="text-end">
-                                                        <a href="#" class="btn btn-md rounded font-sm">Detail</a>
-                                                        <div class="dropdown">
-                                                            <a href="#" data-bs-toggle="dropdown"
-                                                                class="btn btn-light rounded btn-sm font-sm"> <i
-                                                                    class="material-icons md-more_horiz"></i> </a>
-                                                            <div class="dropdown-menu">
-                                                                <a class="dropdown-item" href="#">View detail</a>
-                                                                <a class="dropdown-item" href="#">Edit info</a>
-                                                                <a class="dropdown-item text-danger" href="#">Delete</a>
-                                                            </div>
-                                                        </div> <!-- dropdown //end -->
-                                                    </td>
-                                                </tr>
+                                                <% orders.forEach(order=> {
+                                                    const user = users.find(user => user._id.toString() ===
+                                                    order.userId.toString());
+                                                    %>
+                                                    <tr>
+
+                                                        <td>
+                                                            <%= user ? user.name : 'Unknown User' %>
+                                                        </td>
+                                                        <td>
+                                                            <%= user ? user.email : 'Unknown Email' %>
+                                                        </td>
+                                                        <td>₹<%= order.totalPrice %>
+                                                        </td>
+                                                        <td><span class="badge rounded-pill alert-warning">
+                                                                <%= order.status %>
+                                                            </span></td>
+                                                        <td>
+                                                            <%= new Date(order.placed).toLocaleDateString() %>
+                                                        </td>
+                                                        <td class="text-end">
+                                                            <a href="/admin/order-Details?id=<%=order._id%>"
+                                                                class="btn btn-md rounded font-sm"> Order Details</a>
+
+                                                        </td>
+                                                    </tr>
+                                                    <% }) %>
                                             </tbody>
                                         </table>
                                     </div> <!-- table-responsive //end -->
@@ -194,20 +158,7 @@
                 </nav>
             </div> -->
                 </section> <!-- content-main end// -->
-                <footer class="main-footer font-xs">
-                    <!-- <div class="row pb-30 pt-15">
-                <div class="col-sm-6">
-                    <script>
-                    document.write(new Date().getFullYear())
-                    </script> ©, Evara - HTML Ecommerce Template .
-                </div>
-                <div class="col-sm-6">
-                    <div class="text-sm-end">
-                        All rights reserved
-                    </div>
-                </div>
-            </div> -->
-                </footer>
+
         </main>
         <script src="adminAssets/js/vendors/jquery-3.6.0.min.js"></script>
         <script src="adminAssets/js/vendors/bootstrap.bundle.min.js"></script>
@@ -219,6 +170,5 @@
 </body>
 
 
-<!-- Mirrored from wp.alithemes.com/html/evara/evara-backend/page-orders-2.html by HTTrack Website Copier/3.x [XR&CO'2014], Sun, 01 Aug 2021 15:33:22 GMT -->
 
 </html>
