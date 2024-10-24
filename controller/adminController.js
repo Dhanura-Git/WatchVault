@@ -29,8 +29,10 @@ const adminVerify = async (req, res) => {
     if (adminData) {
       const matchedPw = await bcrypt.compare(password, adminData.password);
       if (matchedPw) {
+        console.log('admin is logged innn');
+        
         req.session.admin = adminData._id
-        res.render('adminDashboard')
+        res.redirect('/admin/adminDashboard')  
       } else {
         res.render('adminLogin', { message: 'Invalid email or password' })
       }
@@ -45,8 +47,21 @@ const adminVerify = async (req, res) => {
 
 const adminDashboard = async (req, res) => {
   try {
-    res.render('adminDashboard')
-  } catch (error) {
+    console.log('dashboard is here'); 
+    
+    const topSellingProduct = await bestSellingProduct()
+    const orders = await Order.find({ orderVerified: true })
+    const products = await product.find({ is_Active: true })
+    const revenue = await getRevenueData()
+    console.log(revenue,'revenue in adminDashboard');
+    
+    res.render('adminDashboard',{
+      topSellingProduct,
+      orders,
+      products,
+      revenue
+    })
+  } catch (error) { 
     console.log(error);
   }
 }
@@ -396,7 +411,7 @@ const getCustomDate = async (req, res) => {
         $lte: endDate
       },
       status: 'Delivered',
-      paymentstatus: 'paid'
+      paymentStatus: 'Paid'
     }).skip(skip).limit(limit);
 
 
@@ -423,7 +438,7 @@ const getAllSales = async (req, res) => {
   try {
     const allDeliveredOrders = await Order.find({
       status: "Delivered",
-      paymentStatus: "paid",
+      paymentStatus: "Paid",
     }).sort({ placed: -1 });
 
     // console.log("From the backend - All Delivered Orders:", allDeliveredOrders);
@@ -677,6 +692,162 @@ const downloadExcel = async (req, res) => {
   }
 };
 
+const salesChart = async (req, res) => {
+  try {
+    const timeRange = req.query.timeRange || 'monthly';
+    console.log(timeRange, "this is from the saleschart");
+
+    let dateFormat;
+    if (timeRange === 'weekly') {
+      dateFormat = { $dateToString: { format: "%Y-%U", date: "$placed" } };
+    } else if (timeRange === 'yearly') {
+      dateFormat = { $dateToString: { format: "%Y", date: "$placed" } };
+    } else {
+      dateFormat = { $dateToString: { format: "%Y-%m", date: "$placed" } };
+    }
+
+    const saleDate = await Order.aggregate([
+      {
+        $match: {
+          orderVerified: true,
+          status: 'Delivered'
+        }
+      },
+      {
+        $group: {
+          _id: dateFormat,
+          totalSales: { $sum: 1 }
+        }
+      },
+      { $sort: { "_id": 1 } }
+    ]);
+
+    console.log(saleDate,'saledate in saleschart');
+    
+    const labels = saleDate.map(item => item._id);
+
+    const datasets = [{
+      label: 'Sales',
+      data: saleDate.map(item => item.totalSales)
+    }];
+
+    res.json({ labels, datasets });
+  } catch (error) {
+    console.error('Error fetching sales chart data:', error);
+    res.status(500).json({ error: 'Failed to fetch sales chart data' });
+  }
+};
+
+const revenueChart = async (req, res) => {
+  try {
+    const timeRange = req.query.timeRange || 'monthly';
+    console.log(timeRange, "this is from the saleschart");
+
+    let dateFormat;
+    if (timeRange === 'weekly') {
+      dateFormat = { $dateToString: { format: "%Y-%U", date: "$placed" } };
+    } else if (timeRange === 'yearly') {
+      dateFormat = { $dateToString: { format: "%Y", date: "$placed" } };
+    } else {
+      dateFormat = { $dateToString: { format: "%Y-%m", date: "$placed" } };
+    }
+
+    const revenueData = await Order.aggregate([
+      {
+        $match: {
+          orderVerified: true,
+          status: 'Delivered',
+          paymentStatus: 'Paid'
+        }
+      },
+      {
+        $group: {
+          _id: dateFormat,
+          totalRevenue: { $sum: "$totalPrice" },
+          totalOrders: { $sum: 1 }
+        }
+      },
+      { $sort: { "_id": 1 } }
+    ]);
+
+    const labels = revenueData.map(item => item._id);
+
+    const datasets = [
+      {
+        label: 'Revenue',
+        data: revenueData.map(item => item.totalRevenue),
+      },
+      {
+        label: 'Orders Count',
+        data: revenueData.map(item => item.totalOrders),
+      }
+    ];
+
+    res.json({ labels, datasets });
+  } catch (error) {
+    console.error('Error fetching revenue chart data:', error);
+    res.status(500).json({ error: 'Failed to fetch revenue chart data' });
+  }
+};
+
+
+const bestSellingProduct = async () => {
+  try {
+
+    const products = await product.find({ is_Active: true })
+    const topsellingproduct = await Order.aggregate([
+      { $match: { orderVerified: true } },
+      { $unwind: "$product" },
+      { $group: { _id: "$product", ordersCount: { $sum: 1 } } },
+      { $limit: 3 }
+    ]);
+
+    for (const product of products) {
+      const topproduct = topsellingproduct.find(items => items._id.toString() === product._id.toString())
+      if (topproduct) {
+        product.ordersCount = topproduct.orderCount;
+      } else {
+        product.ordersCount = 0
+      }
+    }
+
+    products.sort((a, b) => b.totalQuantity - a.totalQuantity);
+
+    return products
+  } catch (error) {
+
+    console.error('Error fetching top selling products:', error);
+    throw new Error('Failed to fetch top selling products');
+
+  }
+}
+
+const getRevenueData = async () => {
+  try {
+      const revenueData = await Order.aggregate([
+          {
+              $match: {
+                orderVerified: true,
+                  $or: [
+                      { status: "Delivered" },
+                      { paymentStatus: "Paid" }
+                  ]
+              }
+          },
+          {
+              $group: {
+                  _id: null,
+                  totalRevenue: { $sum: "$totalPrice" } 
+              }
+          }
+      ]);
+      return revenueData[0] ? revenueData[0].totalRevenue : 0; 
+  } catch (error) {
+      console.error('Error fetching revenue data:', error);
+      return 0; 
+  }
+};
+
 
 
 module.exports = {
@@ -701,5 +872,8 @@ module.exports = {
   getCustomDate,
   getAllSales,
   downloadPdf,
-  downloadExcel
+  downloadExcel,
+  salesChart,
+  revenueChart,
+  bestSellingProduct
 }

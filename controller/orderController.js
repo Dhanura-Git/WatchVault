@@ -198,7 +198,7 @@ const placeOrder = async (req, res) => {
             console.log(`Total price after coupon discount: ${totalPrice}`);
         }
 
-        const totalAmountInPaise = Math.round(totalPrice * 100); 
+        const totalAmountInPaise = Math.round(totalPrice) 
         const randomOrderId = 'ORD-' + Math.floor(100000 + Math.random() * 900000);
 
         if (paymentMethod === 'COD') {

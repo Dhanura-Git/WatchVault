@@ -9,11 +9,11 @@ const loadCart = async (req, res) => {
     try {
         const userId = req.session.user
         const cartData = await cart.findOne({ userId: userId }).populate('product.productId')
-        const wishlistData = await wishlist.findOne({userId: userId})
-        const wishlistCount = wishlistData? wishlistData.product.length: 0
+        const wishlistData = await wishlist.findOne({ userId: userId })
+        const wishlistCount = wishlistData ? wishlistData.product.length : 0
         const cartLength = cartData ? cartData.product.length : 0
         if (cartData && cartLength > 0) {
-            res.render('cart', { cartData, cartLength, wishlistCount})
+            res.render('cart', { cartData, cartLength, wishlistCount })
         } else {
             console.log('cart empty or not found')
             res.render('emptyCart')
@@ -23,7 +23,7 @@ const loadCart = async (req, res) => {
     }
 }
 
-const addToCart = async (req, res) => { 
+const addToCart = async (req, res) => {
     try {
         const productId = req.query.id
         const userId = req.session.user
@@ -40,11 +40,11 @@ const addToCart = async (req, res) => {
         const existingProduct = Cart.product.findIndex(item => item.productId.toString() === productId)
         if (existingProduct !== -1) {
             const totalQuantity = Cart.product[existingProduct].quantity + 1
-            console.log(totalQuantity,'totalquantity in cart frontt');
-            
+            console.log(totalQuantity, 'totalquantity in cart frontt');
+
             if (totalQuantity > Product.stock) {
                 console.log('out of stock');
-                
+
                 return res.status(400).json({ success: false, error: 'Stock unavailable' })
             }
             Cart.product[existingProduct].quantity = totalQuantity
@@ -63,9 +63,14 @@ const addToCart = async (req, res) => {
 const updateCart = async (req, res) => {
     try {
         const { productId, quantity } = req.body;
-
-
         const userId = req.session.user;
+
+        const prodData = await product.findById(productId)
+        if (!prodData) {
+            return res.status(404).json({
+                error: 'Product not found.'
+            });
+        }
 
         let Cart = await cart.findOne({ userId });
         if (!Cart) {
@@ -78,35 +83,37 @@ const updateCart = async (req, res) => {
 
         if (productIndex !== -1) {
             currentQuantity = Cart.product[productIndex].quantity
-            console.log(currentQuantity,'cureentcq');
         }
-            const requestedQuantity = parseInt(quantity); 
-            const newQuantity = currentQuantity + requestedQuantity; 
+        const requestedQuantity = parseInt(quantity);
+        const newQuantity = currentQuantity + requestedQuantity;
+        console.log(newQuantity, 'newQuantity in updateCartcontroller');
 
-            if (newQuantity > product.stock) {
-                return res.status(400).json({
-                    error: `Requested quantity exceeds available stock. Only ${product.stock} items in stock.`
-                });
+
+        if (newQuantity > prodData.stock) {
+            console.log('this is over');
+            return res.status(400).json({
+                error: `Requested quantity exceeds available stock. Only ${prodData.stock} items in stock.`
+            });
+        }
+
+
+        if (productIndex !== -1) {
+            if (newQuantity > 0) {
+                Cart.product[productIndex].quantity = newQuantity;
+            } else {
+                Cart.product.splice(productIndex, 1);
             }
-    
-           
-            if (productIndex !== -1) {
-                if (newQuantity > 0) {
-                    Cart.product[productIndex].quantity = newQuantity;
-                } else {
-                    Cart.product.splice(productIndex, 1); 
-                }
-            } else if (requestedQuantity > 0) {
-                Cart.product.push({ product_id: productId, quantity: requestedQuantity });
-            }
-            
-            // if (quantity > 0) {
-            //     Cart.product[productIndex].quantity += quantity;
-            // } else if (quantity < 0 && Cart.product[productIndex].quantity + quantity > 0) {
-            //     Cart.product[productIndex].quantity += quantity;
-            // } else {
-            //     Cart.product.splice(productIndex, 1);
-            // }
+        } else if (requestedQuantity > 0) {
+            Cart.product.push({ product_id: productId, quantity: requestedQuantity });
+        }
+
+        // if (quantity > 0) {
+        //     Cart.product[productIndex].quantity += quantity;
+        // } else if (quantity < 0 && Cart.product[productIndex].quantity + quantity > 0) {
+        //     Cart.product[productIndex].quantity += quantity;
+        // } else {
+        //     Cart.product.splice(productIndex, 1);
+        // }
         // } else if (quantity > 0) {
         //     Cart.product.push({ productId, quantity });
         // }
@@ -145,31 +152,31 @@ const cartDelete = async (req, res) => {
     }
 }
 
-const loadCheckout = async (req, res) => { 
+const loadCheckout = async (req, res) => {
     try {
         const userId = req.session.user;
         const cartData = await cart.findOne({ userId }).populate('product.productId');
-        const cartCount = cartData? cartData.product.length: 0
-        const wishlistData = await wishlist.findOne({userId})
-        const wishlistCount = wishlistData? wishlistData.product.length: 0
+        const cartCount = cartData ? cartData.product.length : 0
+        const wishlistData = await wishlist.findOne({ userId })
+        const wishlistCount = wishlistData ? wishlistData.product.length : 0
 
         if (!cartData) {
-            return res.redirect('/loadCart'); 
+            return res.redirect('/loadCart');
         }
-        console.log(cartData,'cartdta inn oadlcheckout');
-        
+        console.log(cartData, 'cartdta inn oadlcheckout');
+
 
         const products = cartData.product;
-        console.log(products,'products in loadcheckout');
-        
+        console.log(products, 'products in loadcheckout');
+
 
         const activeProducts = products.filter(item => item.productId.is_Active);
         const inactiveProducts = products.filter(item => !item.productId.is_Active);
 
         if (inactiveProducts.length > 0) {
-            req.session.inactiveProducts = inactiveProducts.map(item => item.productId.productName); 
-            req.session.message = `The following products are unavailable: ${req.session.inactiveProducts.join(', ')}`; 
-            return res.redirect('/loadCart'); 
+            req.session.inactiveProducts = inactiveProducts.map(item => item.productId.productName);
+            req.session.message = `The following products are unavailable: ${req.session.inactiveProducts.join(', ')}`;
+            return res.redirect('/loadCart');
         }
 
 
@@ -191,7 +198,7 @@ const loadCheckout = async (req, res) => {
         const availableCoupons = coupons.filter(coupon => coupon.couponCode !== usedCouponCode)
 
         res.render('checkout', {
-            products: activeProducts, 
+            products: activeProducts,
             cart: cartData,
             cartCount,
             wishlistCount,
@@ -204,7 +211,7 @@ const loadCheckout = async (req, res) => {
         });
     } catch (error) {
         console.log(error);
-        res.redirect('/loadCart'); 
+        res.redirect('/loadCart');
     }
 };
 

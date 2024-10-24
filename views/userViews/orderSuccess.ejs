@@ -702,13 +702,12 @@
         <div class="success-message">
             <h1>Thank You for Your Order!</h1>
             <p>Your order ID is <strong><%= Order.orderId %></strong>.</p>
-            <p>Total Amount: <strong>₹<%= Order.totalPrice %></strong></p>
             <p>Payment Status: <strong><%= Order.paymentStatus %></strong></p>
             <p>Order Status: <strong><%= Order.status %></strong></p>
         </div>
 
-        <div class="order-summary">
-            <h2>Order Summary</h2>
+        <!-- <div class="order-summary">
+            <h2>Order Summary</h2> 
             <table class="order-items">
                 <thead>
                     <tr>
@@ -729,7 +728,7 @@
                     <% }); %>
                 </tbody>
             </table>
-        </div>
+        </div> -->
 
         <div class="actions">
             <a href="/shop" class="btn">Continue Shopping</a>

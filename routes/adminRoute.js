@@ -65,6 +65,9 @@ adminRoute.get('/customDate', adminAuth.isLogin, adminController.getCustomDate)
 adminRoute.get('/downloadPdf', adminAuth.isLogin, adminController.downloadPdf)
 adminRoute.get('/downloadExcel', adminAuth.isLogin, adminController.downloadExcel)
 
+adminRoute.get('/salesChart', adminAuth.isLogin, adminController.salesChart)
+adminRoute.get('/revenueChart',adminAuth.isLogin,adminController.revenueChart)
+
 
 
 module.exports = adminRoute

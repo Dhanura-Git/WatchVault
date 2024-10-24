@@ -124,6 +124,7 @@
                                                     <th>description</th>
                                                     <th>Coupon Code</th>
                                                     <th>Expiration Date</th>
+                                                    <th>Discount Value</th>
                                                     <th class="text-end">Action</th>
                                                 </tr>
                                             </thead>
@@ -143,8 +144,11 @@
                                                             <td>
                                                                 <%= new Date(coupon.expiryTime).toLocaleDateString() %>
                                                             </td>
+                                                            <td>
+                                                                <%= coupon.discountValue %>
+                                                            </td>
                                                             <td class="text-end">
-                                                                
+
                                                                 <button class="btn btn-danger btn-sm"
                                                                     onclick="deleteCoupon('<%= coupon._id %>')">Delete</button>
                                                             </td>

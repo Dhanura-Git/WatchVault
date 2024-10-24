@@ -29,8 +29,7 @@
 	<link rel="stylesheet" type="text/css" href="css/util.css">
 	<link rel="stylesheet" type="text/css" href="css/main.css">
 	<!-- Include SweetAlert2 CSS and JS -->
-	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
-	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
+	
 
 	<!--===============================================================================================-->
 </head>
@@ -328,9 +327,9 @@
 										confirmButtonText: 'OK'
 									});
 								</script>
-								<% req.session.message = null; // Clear the message after displaying it %>
-							<% } %>
-							
+								<% req.session.message=null; // Clear the message after displaying it %>
+									<% } %>
+
 
 
 
@@ -479,6 +478,7 @@
 		<script src="vendor/MagnificPopup/jquery.magnific-popup.min.js"></script>
 		<!--===============================================================================================-->
 		<script src="vendor/perfect-scrollbar/perfect-scrollbar.min.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 		<script>
 			$('.js-pscroll').each(function () {
 				$(this).css('position', 'relative');
@@ -496,7 +496,7 @@
 		</script>
 		<!--===============================================================================================-->
 		<script src="js/main.js"></script>
- 
+
 		<script>
 			function updateCartItem(productId, quantityChange) {
 				return fetch(`/updateCart`, {
@@ -529,15 +529,14 @@
 							updateSubtotal();
 						})
 						.catch(error => {
-							// Swal.fire({
-							// 	icon: 'error',
-							// 	title: 'Oops...',
-							// 	text: error.message,
-							// });
+							Swal.fire({
+								icon: 'error',
+								title: 'Oops...',
+								text: error.message,
+							});
 						});
 				}
 			}
-
 			function increase(productId) {
 				const quantityInput = document.getElementById(`quantity_${productId}`);
 				let currentQuantity = parseInt(quantityInput.value, 10);
@@ -548,15 +547,26 @@
 						quantityInput.value = currentQuantity;
 						updateTotal(productId, currentQuantity);
 						updateSubtotal();
+						console.log("stock innnnnnnnnnnnnnnn");
+
 					})
 					.catch(error => {
-						// Swal.fire({
-						// 	icon: 'error',
-						// 	title: 'Oops...',
-						// 	text: error.message,
-						// });
+						// Check if error response exists and handle it
+						if (error) {
+							console.log("stock outttttttttttttttt111111111111111");
+							alert("Stock Limit Reached")
+							
+
+							Swal.fire({
+								icon: 'error',
+								title: 'Stock Limit Reached',
+								text: error.response.data.error,  // Display backend error in Swal
+							});
+						}
 					});
 			}
+
+
 
 			function updateTotal(productId, quantity) {
 				const priceElement = document.getElementById(`price_${productId}`);
@@ -604,6 +614,7 @@
 
 
 
+
 		<script>
 			function deleteItem(productId) {
 				console.log('Deleting product with ID:', productId);
@@ -627,7 +638,7 @@
 
 
 		</script>
-		
+
 
 </body>
 
