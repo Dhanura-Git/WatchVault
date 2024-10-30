@@ -27,17 +27,25 @@ const isLogout = async (req, res, next) => {
 
 const isBlocked = async (req, res, next) => {
     try {
+        if (!req.session.user) {
+            return res.redirect('/login');
+        }
+
         const user = await User.findById(req.session.user);
         
-        if (user.is_active) {
+        if (user && user.is_active) {
             next();
-        } else if(user && user.is_active == false) {
-            res.render('login', {message: 'Your account is currently blocked'});
+        } else if (user && !user.is_active) {
+            req.session.user = null; 
+            res.render('login', { message: 'Your account is currently blocked' });
+        } else {
+            res.redirect('/login');
         }
     } catch (error) { 
         console.log(error);
     }
-}
+};
+
 
 
 

@@ -30,9 +30,9 @@ const adminVerify = async (req, res) => {
       const matchedPw = await bcrypt.compare(password, adminData.password);
       if (matchedPw) {
         console.log('admin is logged innn');
-        
+
         req.session.admin = adminData._id
-        res.redirect('/admin/adminDashboard')  
+        res.redirect('/admin/adminDashboard')
       } else {
         res.render('adminLogin', { message: 'Invalid email or password' })
       }
@@ -47,21 +47,21 @@ const adminVerify = async (req, res) => {
 
 const adminDashboard = async (req, res) => {
   try {
-    console.log('dashboard is here'); 
-    
+    console.log('dashboard is here');
+
     const topSellingProduct = await bestSellingProduct()
     const orders = await Order.find({ orderVerified: true })
     const products = await product.find({ is_Active: true })
     const revenue = await getRevenueData()
-    console.log(revenue,'revenue in adminDashboard');
-    
-    res.render('adminDashboard',{
+    console.log(revenue, 'revenue in adminDashboard');
+
+    res.render('adminDashboard', {
       topSellingProduct,
       orders,
       products,
       revenue
     })
-  } catch (error) { 
+  } catch (error) {
     console.log(error);
   }
 }
@@ -77,8 +77,24 @@ const adminLogout = async (req, res) => {
 
 const loadUsers = async (req, res) => {
   try {
-    const userData = await User.find({ is_admin: false })
-    res.render('userManagement', { users: userData })
+    let page = parseInt(req.query.page) || 1
+    const limit = 5
+    const searchTerm = req.query.search ? req.query.search.trim() : ''
+    const query = searchTerm ? { name: { $regex: new RegExp(searchTerm, 'i') } } : {}
+    const userData = await User.find(query)
+      .limit(limit)
+      .skip((page - 1) * limit)
+      .exec();
+
+    const count = await User.countDocuments(query);
+    const totalpages = Math.ceil(count / limit);
+
+    res.render('userManagement', { 
+      users: userData,
+      totalpages: totalpages,
+      currentpage: page,
+      search: searchTerm 
+     })
   } catch (error) {
     console.log(error);
   }
@@ -722,8 +738,8 @@ const salesChart = async (req, res) => {
       { $sort: { "_id": 1 } }
     ]);
 
-    console.log(saleDate,'saledate in saleschart');
-    
+    console.log(saleDate, 'saledate in saleschart');
+
     const labels = saleDate.map(item => item._id);
 
     const datasets = [{
@@ -824,27 +840,27 @@ const bestSellingProduct = async () => {
 
 const getRevenueData = async () => {
   try {
-      const revenueData = await Order.aggregate([
-          {
-              $match: {
-                orderVerified: true,
-                  $or: [
-                      { status: "Delivered" },
-                      { paymentStatus: "Paid" }
-                  ]
-              }
-          },
-          {
-              $group: {
-                  _id: null,
-                  totalRevenue: { $sum: "$totalPrice" } 
-              }
-          }
-      ]);
-      return revenueData[0] ? revenueData[0].totalRevenue : 0; 
+    const revenueData = await Order.aggregate([
+      {
+        $match: {
+          orderVerified: true,
+          $or: [
+            { status: "Delivered" },
+            { paymentStatus: "Paid" }
+          ]
+        }
+      },
+      {
+        $group: {
+          _id: null,
+          totalRevenue: { $sum: "$totalPrice" }
+        }
+      }
+    ]);
+    return revenueData[0] ? revenueData[0].totalRevenue : 0;
   } catch (error) {
-      console.error('Error fetching revenue data:', error);
-      return 0; 
+    console.error('Error fetching revenue data:', error);
+    return 0;
   }
 };
 

@@ -165,7 +165,7 @@ const placeOrder = async (req, res) => {
                 finalProduct.stock -= productQty;
                 await finalProduct.save();
             } else {
-                return res.status(400).json({ success: false, message: `Not enough stock for product: ${finalProduct.name}` });
+                return res.status(400).json({ success: false, message: `Not enough stock for product: ${finalProduct.productName}` });
             }
         }
 

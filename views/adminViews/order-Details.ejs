@@ -40,7 +40,8 @@
                             <div class="row align-items-center">
 
                                 <div class="col-lg-6 col-md-6 ms-auto text-md-end">
-                                    <select id="orderStatusSelect" class="form-select d-inline-block mb-lg-0 mb-15 mw-200">
+                                    <select id="orderStatusSelect"
+                                        class="form-select d-inline-block mb-lg-0 mb-15 mw-200">
                                         <option>Change status</option>
                                         <option>Awaiting payment</option>
                                         <option>Confirmed</option>
@@ -97,9 +98,10 @@
                                         <div class="text">
                                             <h6 class="mb-1">Deliver to</h6>
                                             <p class="mb-1">
-                                                Address: <%= orders.address[0].name %> <br>
-                                                    Phone number: <%= orders.address[0].phone %> <br>
-                                                        Pincode: <%= orders.address[0].pincode %> <br>
+                                                Address: <%= orders.address[0].name %>, <%= orders.address[0].address %>
+                                                        , <%= orders.address[0].city %>, <%= orders.address[0].state %><br>
+                                                                    Phone number: <%= orders.address[0].phone %> <br>
+                                                                        Pincode: <%= orders.address[0].pincode %> <br>
                                             </p>
                                         </div>
                                     </article>

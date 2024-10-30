@@ -5,6 +5,7 @@ const product = require('../model/productModel')
 const cart = require('../model/cartModel')
 const Wallet = require('../model/walletModel')
 const Wishlist = require('../model/wishlistModel')
+const bcrypt = require('bcrypt')
 const crypto = require('crypto')
 const Razorpay = require('razorpay')
 var easyinvoice = require('easyinvoice')
@@ -157,6 +158,8 @@ const orderDetails = async (req, res) => {
         const userId = req.session.user
         const orderId = req.query.id
         const orderData = await order.findById(orderId).populate('coupon')
+        console.log(orderData,'orderdata in orderdetails in userpro');
+        
 
         const userData = await User.findById(orderData.userId)
         const productsInOrder = orderData.product.map(product => product.product)
@@ -165,11 +168,18 @@ const orderDetails = async (req, res) => {
         let productsWithCoupon = 0
         orderData.product.forEach(item => {
             const product = productData.find(p => p._id.equals(item.product))
+            console.log(product,'orderdetails in userprofile');
+            
             if (product) {
                 product.quantity = orderData.quantity
                 product.originalPrice = product.originalPrice || 0
-                product.discountedPrice = product.price || 0
+                console.log(product.originalPrice,'originalPrice inside the if');
+                product.discountedPrice = orderData.totalPrice || 0
+                console.log(product.discountedPrice,'discountedPrice inside the if');
+
                 product.discountPercentage = ((product.originalPrice - product.discountedPrice) / product.originalPrice) * 100 || 0
+                console.log(product.discountPercentage,'inside the if');
+                
                 product.discountAmount = product.originalPrice - product.discountedPrice || 0
                 if (product.discountPercentage > 0) {
                     productsWithCoupon += 1
@@ -192,6 +202,7 @@ const orderDetails = async (req, res) => {
         if (orderData.Coupon) {
             couponDiscount = discountedTotalPrice * (orderData.Coupon.discountValue / 100)
             couponPercentage = orderData.Coupon.discountValue
+            couponName = orderData.Coupon.couponName
             discountedTotalPrice -= couponDiscount
         }
 
@@ -455,6 +466,47 @@ const invoicePdf = async (req, res) => {
     }
 }
 
+const loadChangePassword = async(req,res)=>{
+    try {
+        res.render('changePassword',)
+    } catch (error) {
+        console.log(error.message);
+    }
+}
+
+const changePassword = async (req, res) => {
+    console.log("is it here");
+    try {
+        const userId = req.session.user._id;
+        console.log(req.body, "t");
+        const { 'Current-password': currentPassword, 'new-password': newPassword, 'confirm-password': confirmPassword } = req.body;
+        console.log(currentPassword, "this is current");
+
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({ success: false, message: 'User not found' });
+        }
+
+        const match = await bcrypt.compare(currentPassword, user.password);
+        if (!match) {
+            console.log("Error: Current password is incorrect");
+            return res.status(400).json({ success: false, message: 'Current password is incorrect' });
+        }
+
+        if (newPassword !== confirmPassword) {
+            return res.status(400).json({ success: false, message: 'Passwords do not match' });
+        }
+
+        const hashedPassword = await bcrypt.hash(newPassword, 10);
+        await User.updateOne({ _id: userId }, { $set: { password: hashedPassword } });
+
+        res.json({ success: true, message: 'Password updated successfully' });
+    } catch (error) {
+        console.error(error);
+        // res.status(500).json({ success: false, message: 'Internal Server Error' });
+    }
+}; 
+
 
 module.exports = {
     loadProfile,
@@ -468,5 +520,7 @@ module.exports = {
     returnOrder,
     addToWallet,
     verifyPaymentWallet,
-    invoicePdf
+    invoicePdf,
+    loadChangePassword,
+    changePassword
 }

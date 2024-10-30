@@ -52,13 +52,16 @@ userRoute.delete('/deleteWishlist', userAuth.isLogin, userAuth.isBlocked, userCo
 userRoute.get('/profile', userAuth.isLogin, userAuth.isBlocked, userprofileController.loadProfile)
 userRoute.get('/orderDetails', userAuth.isLogin, userAuth.isBlocked, userprofileController.orderDetails)
 userRoute.post('/cancelOrder/:id', userAuth.isLogin, userAuth.isBlocked, userprofileController.cancelOrder)
-userRoute.post('/returnOrder',userAuth.isLogin,userAuth.isBlocked,userprofileController.returnOrder)
+userRoute.post('/returnOrder', userAuth.isLogin, userAuth.isBlocked, userprofileController.returnOrder)
 
 userRoute.get('/addAddress', userAuth.isLogin, userAuth.isBlocked, userprofileController.loadAddAddress)
 userRoute.post('/addAddress', userAuth.isLogin, userAuth.isBlocked, userprofileController.addAddress)
 userRoute.get('/editAddress', userAuth.isLogin, userAuth.isBlocked, userprofileController.editAddress)
 userRoute.post('/editAddress', userAuth.isLogin, userAuth.isBlocked, userprofileController.updateAddress)
 userRoute.get('/deleteAddress', userAuth.isLogin, userAuth.isBlocked, userprofileController.deleteAddress)
+
+userRoute.get('/changePassword', userAuth.isLogin, userAuth.isBlocked, userprofileController.loadChangePassword)
+userRoute.post('/changePassword', userAuth.isLogin, userAuth.isBlocked, userprofileController.changePassword)
 
 userRoute.get('/loadCart', userAuth.isLogin, userAuth.isBlocked, cartController.loadCart)
 userRoute.get('/addToCart', userAuth.isLogin, userAuth.isBlocked, cartController.addToCart)

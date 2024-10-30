@@ -35,6 +35,42 @@
 	<link rel="stylesheet" type="text/css" href="css/util.css">
 	<link rel="stylesheet" type="text/css" href="css/main.css">
 	<!--===============================================================================================-->
+
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ionicons@5.5.2/dist/ionicons.css">
+
+
+	<style>
+		.page-pagination ul {
+			list-style: none;
+			padding: 0;
+			display: flex;
+			justify-content: center;
+			gap: 10px;
+		}
+
+		.page-pagination ul li {
+			display: inline-block;
+		}
+
+		.page-pagination ul li a {
+			padding: 8px 12px;
+			border: 1px solid #ddd;
+			border-radius: 4px;
+			text-decoration: none;
+			color: #333;
+			transition: background-color 0.3s, color 0.3s;
+		}
+
+		.page-pagination ul li a:hover {
+			background-color: #333;
+			color: #fff;
+		}
+
+		.page-pagination ul li a.active {
+			background-color: #333;
+			color: #fff;
+		}
+	</style>
 </head>
 
 <body class="animsition">
@@ -114,13 +150,14 @@
 						<!-- <div class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 js-show-modal-search">
 							<i class="zmdi zmdi-search"></i>
 						</div> -->
-	
-						<a href="/loadCart" class="dis-block icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti"
-						data-notify="<%= cartCount %>">
+
+						<a href="/loadCart"
+							class="dis-block icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti"
+							data-notify="<%= cartCount %>">
 							<i class="zmdi zmdi-shopping-cart"></i>
-	
+
 						</a>
-	
+
 						<a href="/wishlist"
 							class="dis-block icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti"
 							data-notify="<%= wishlistCount %>">
@@ -259,7 +296,7 @@
 						All Products
 					</button>
 
-					<button class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5" data-filter=".women">
+					<!-- <button class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5" data-filter=".women">
 						Digital Watches
 					</button>
 
@@ -269,7 +306,7 @@
 
 					<button class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5" data-filter=".bag">
 						Smart Watches
-					</button>
+					</button> -->
 				</div>
 
 				<div class="flex-w flex-c-m m-tb-10">
@@ -277,7 +314,14 @@
 						class="flex-c-m stext-106 cl6 size-104 bor4 pointer hov-btn3 trans-04 m-r-8 m-tb-4 js-show-filter">
 						<i class="icon-filter cl2 m-r-6 fs-15 trans-04 zmdi zmdi-filter-list"></i>
 						<i class="icon-close-filter cl2 m-r-6 fs-15 trans-04 zmdi zmdi-close dis-none"></i>
-						Filter
+						Sort
+					</div>
+
+					<div onclick="clearSearch()"
+						class="flex-c-m stext-106 cl6 size-104 bor4 pointer hov-btn3 trans-04 m-r-8 m-tb-4 js-show-filter">
+					
+						<i class="icon-close-filter cl2 m-r-6 fs-15 trans-04 zmdi zmdi-close dis-none"></i>
+						Clear
 					</div>
 
 					<div class="flex-c-m stext-106 cl6 size-105 bor4 pointer hov-btn3 trans-04 m-tb-4 js-show-search">
@@ -286,22 +330,26 @@
 						Search
 					</div>
 
-
 				</div>
 
 				<!-- Search product -->
 				<div class="dis-none panel-search w-full p-t-10 p-b-15">
-					<form method="GET" action="/search" onsubmit="return handleSearch(event);" id="searchForm">
+					<form method="GET" action="/shop" onsubmit="return handleSearch(event);" id="searchForm">
 						<div class="bor8 dis-flex p-l-15">
 							<button class="size-113 flex-c-m fs-16 cl2 hov-cl1 trans-04" type="submit">
 								<i class="zmdi zmdi-search"></i>
 							</button>
-
 							<input class="mtext-107 cl2 size-114 plh2 p-r-15" type="text" name="search"
 								placeholder="Search" value="<%= typeof search !== 'undefined' ? search : '' %>">
+							<% if (search) { %>
+								<button type="button" onclick="clearSearch()" class="clear-search-btn">
+									<i class="zmdi zmdi-close"></i>
+								</button>
+								<% } %>
 						</div>
 					</form>
 				</div>
+
 
 				<!-- Filter -->
 				<div class="dis-none panel-filter w-full p-t-10">
@@ -390,241 +438,36 @@
 						<% } %>
 							<% } %>
 
-								<!-- 
-				<div class="col-sm-6 col-md-4 col-lg-3 p-b-35 isotope-item women">
-					Block2
-					<div class="block2">
-						<div class="block2-pic hov-img0">
-							<img src="images/product-02.jpg" alt="IMG-PRODUCT">
-
-							<a href="#" class="block2-btn flex-c-m stext-103 cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04 js-show-modal1">
-								Quick View
-							</a>
-						</div>
-
-						<div class="block2-txt flex-w flex-t p-t-14">
-							<div class="block2-txt-child1 flex-col-l ">
-								<a href="product-detail.html" class="stext-104 cl4 hov-cl1 trans-04 js-name-b2 p-b-6">
-									Herschel supply
-								</a>
-
-								<span class="stext-105 cl3">
-									$35.31
-								</span>
-							</div>
-
-							<div class="block2-txt-child2 flex-r p-t-3">
-								<a href="#" class="btn-addwish-b2 dis-block pos-relative js-addwish-b2">
-									<img class="icon-heart1 dis-block trans-04" src="images/icons/icon-heart-01.png" alt="ICON">
-									<img class="icon-heart2 dis-block trans-04 ab-t-l" src="images/icons/icon-heart-02.png" alt="ICON">
-								</a>
-							</div>
-						</div>
-					</div>
-				</div> -->
-
-								<!-- <div class="col-sm-6 col-md-4 col-lg-3 p-b-35 isotope-item men">
-					Block2
-					<div class="block2">
-						<div class="block2-pic hov-img0">
-							<img src="images/product-03.jpg" alt="IMG-PRODUCT">
-
-							<a href="#" class="block2-btn flex-c-m stext-103 cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04 js-show-modal1">
-								Quick View
-							</a>
-						</div>
-
-						<div class="block2-txt flex-w flex-t p-t-14">
-							<div class="block2-txt-child1 flex-col-l ">
-								<a href="product-detail.html" class="stext-104 cl4 hov-cl1 trans-04 js-name-b2 p-b-6">
-									Only Check Trouser
-								</a>
-
-								<span class="stext-105 cl3">
-									$25.50
-								</span>
-							</div>
-
-							<div class="block2-txt-child2 flex-r p-t-3">
-								<a href="#" class="btn-addwish-b2 dis-block pos-relative js-addwish-b2">
-									<img class="icon-heart1 dis-block trans-04" src="images/icons/icon-heart-01.png" alt="ICON">
-									<img class="icon-heart2 dis-block trans-04 ab-t-l" src="images/icons/icon-heart-02.png" alt="ICON">
-								</a>
-							</div>
-						</div>
-					</div>
-				</div> -->
-
-								<!-- <div class="col-sm-6 col-md-4 col-lg-3 p-b-35 isotope-item women">
-					Block2
-					<div class="block2">
-						<div class="block2-pic hov-img0">
-							<img src="images/product-04.jpg" alt="IMG-PRODUCT">
-
-							<a href="#" class="block2-btn flex-c-m stext-103 cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04 js-show-modal1">
-								Quick View
-							</a>
-						</div>
-
-						<div class="block2-txt flex-w flex-t p-t-14">
-							<div class="block2-txt-child1 flex-col-l ">
-								<a href="product-detail.html" class="stext-104 cl4 hov-cl1 trans-04 js-name-b2 p-b-6">
-									Classic Trench Coat
-								</a>
-
-								<span class="stext-105 cl3">
-									$75.00
-								</span>
-							</div>
-
-							<div class="block2-txt-child2 flex-r p-t-3">
-								<a href="#" class="btn-addwish-b2 dis-block pos-relative js-addwish-b2">
-									<img class="icon-heart1 dis-block trans-04" src="images/icons/icon-heart-01.png" alt="ICON">
-									<img class="icon-heart2 dis-block trans-04 ab-t-l" src="images/icons/icon-heart-02.png" alt="ICON">
-								</a>
-							</div>
-						</div>
-					</div>
-				</div> -->
-
-								<!-- <div class="col-sm-6 col-md-4 col-lg-3 p-b-35 isotope-item women">
-					Block2
-					<div class="block2">
-						<div class="block2-pic hov-img0">
-							<img src="images/product-05.jpg" alt="IMG-PRODUCT">
-
-							<a href="#" class="block2-btn flex-c-m stext-103 cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04 js-show-modal1">
-								Quick View
-							</a>
-						</div>
-
-						<div class="block2-txt flex-w flex-t p-t-14">
-							<div class="block2-txt-child1 flex-col-l ">
-								<a href="product-detail.html" class="stext-104 cl4 hov-cl1 trans-04 js-name-b2 p-b-6">
-									Front Pocket Jumper
-								</a>
-
-								<span class="stext-105 cl3">
-									$34.75
-								</span>
-							</div>
-
-							<div class="block2-txt-child2 flex-r p-t-3">
-								<a href="#" class="btn-addwish-b2 dis-block pos-relative js-addwish-b2">
-									<img class="icon-heart1 dis-block trans-04" src="images/icons/icon-heart-01.png" alt="ICON">
-									<img class="icon-heart2 dis-block trans-04 ab-t-l" src="images/icons/icon-heart-02.png" alt="ICON">
-								</a>
-							</div>
-						</div>
-					</div>
-				</div> -->
-
-								<!-- <div class="col-sm-6 col-md-4 col-lg-3 p-b-35 isotope-item watches">
-					Block2
-					<div class="block2">
-						<div class="block2-pic hov-img0">
-							<img src="images/product-06.jpg" alt="IMG-PRODUCT">
-
-							<a href="#" class="block2-btn flex-c-m stext-103 cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04 js-show-modal1">
-								Quick View
-							</a>
-						</div>
-
-						<div class="block2-txt flex-w flex-t p-t-14">
-							<div class="block2-txt-child1 flex-col-l ">
-								<a href="product-detail.html" class="stext-104 cl4 hov-cl1 trans-04 js-name-b2 p-b-6">
-									Vintage Inspired Classic 
-								</a>
-
-								<span class="stext-105 cl3">
-									$93.20
-								</span>
-							</div>
-
-							<div class="block2-txt-child2 flex-r p-t-3">
-								<a href="#" class="btn-addwish-b2 dis-block pos-relative js-addwish-b2">
-									<img class="icon-heart1 dis-block trans-04" src="images/icons/icon-heart-01.png" alt="ICON">
-									<img class="icon-heart2 dis-block trans-04 ab-t-l" src="images/icons/icon-heart-02.png" alt="ICON">
-								</a>
-							</div>
-						</div>
-					</div>
-				</div> -->
-
-								<!-- <div class="col-sm-6 col-md-4 col-lg-3 p-b-35 isotope-item women">
-					Block2
-					<div class="block2">
-						<div class="block2-pic hov-img0">
-							<img src="images/product-07.jpg" alt="IMG-PRODUCT">
-
-							<a href="#" class="block2-btn flex-c-m stext-103 cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04 js-show-modal1">
-								Quick View
-							</a>
-						</div>
-
-						<div class="block2-txt flex-w flex-t p-t-14">
-							<div class="block2-txt-child1 flex-col-l ">
-								<a href="product-detail.html" class="stext-104 cl4 hov-cl1 trans-04 js-name-b2 p-b-6">
-									Shirt in Stretch Cotton
-								</a>
-
-								<span class="stext-105 cl3">
-									$52.66
-								</span>
-							</div>
-
-							<div class="block2-txt-child2 flex-r p-t-3">
-								<a href="#" class="btn-addwish-b2 dis-block pos-relative js-addwish-b2">
-									<img class="icon-heart1 dis-block trans-04" src="images/icons/icon-heart-01.png" alt="ICON">
-									<img class="icon-heart2 dis-block trans-04 ab-t-l" src="images/icons/icon-heart-02.png" alt="ICON">
-								</a>
-							</div>
-						</div>
-					</div>
-				</div> -->
-
-								<!-- <div class="col-sm-6 col-md-4 col-lg-3 p-b-35 isotope-item women">
-					Block2
-					<div class="block2">
-						<div class="block2-pic hov-img0">
-							<img src="images/product-08.jpg" alt="IMG-PRODUCT">
-
-							<a href="#" class="block2-btn flex-c-m stext-103 cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04 js-show-modal1">
-								Quick View
-							</a>
-						</div>
-
-						<div class="block2-txt flex-w flex-t p-t-14">
-							<div class="block2-txt-child1 flex-col-l ">
-								<a href="product-detail.html" class="stext-104 cl4 hov-cl1 trans-04 js-name-b2 p-b-6">
-									Pieces Metallic Printed
-								</a>
-
-								<span class="stext-105 cl3">
-									$18.96
-								</span>
-							</div>
-
-							<div class="block2-txt-child2 flex-r p-t-3">
-								<a href="#" class="btn-addwish-b2 dis-block pos-relative js-addwish-b2">
-									<img class="icon-heart1 dis-block trans-04" src="images/icons/icon-heart-01.png" alt="ICON">
-									<img class="icon-heart2 dis-block trans-04 ab-t-l" src="images/icons/icon-heart-02.png" alt="ICON">
-								</a>
-							</div>
-						</div>
-					</div>
-				</div> -->
-
-
 			</div>
-
-			<!-- Load more -->
-			<!-- <div class="flex-c-m flex-w w-full p-t-45">
-				<a href="#" class="flex-c-m stext-101 cl5 size-103 bg2 bor1 hov-btn1 p-lr-15 trans-04">
-					Load More
-				</a>
-			</div> -->
 		</div>
+
+		<div class="page-pagination text-center" data-aos="fade-up" data-aos-delay="0">
+			<!-- <ul>
+			<li><a class="active" href="#">1</a></li>
+			<li><a href="#">2</a></li>
+			<li><a href="#">3</a></li>
+			<li><a href="#"><i class="ion-ios-skipforward"></i></a></li>
+		</ul> -->
+			<ul>
+				<% if (currentPage> 1) { %>
+					<li><a
+							href="?page=<%= currentPage - 1 %>&sortByPrice=<%= sortByPrice %>&sortByName=<%= sortByName %>"><i
+								class="ion-chevron-back">
+								< </i></a></li>
+					<% } %>
+						<% for (let i=1; i <=totalPages; i++) { %>
+							<li><a class="<%= currentPage === i ? 'active' : '' %>"
+									href="?page=<%= i %>&sortByPrice=<%= sortByPrice %>&sortByName=<%= sortByName %>">
+									<%= i %>
+								</a></li>
+							<% } %>
+								<% if (currentPage < totalPages) { %>
+									<li><a
+											href="?page=<%= currentPage + 1 %>&sortByPrice=<%= sortByPrice %>&sortByName=<%= sortByName %>"><i
+												class="ion-chevron-forward"> > </i></a></li>
+									<% } %>
+			</ul>
+		</div> <!-- End Pagination -->
 	</div>
 
 
@@ -1018,6 +861,16 @@
 	</script>
 	<!--===============================================================================================-->
 	<script src="js/main.js"></script>
+
+	<script>
+		function clearSearch() {
+			const url = new URL(window.location.href);
+			url.searchParams.delete('search');  // Remove the 'search' parameter
+			url.searchParams.set('page', 1);    // Reset to the first page if needed
+			window.location.href = url.toString();  // Reload the page with the updated URL
+		}
+
+	</script>
 
 	<script>
 		function handleSearch(event) {

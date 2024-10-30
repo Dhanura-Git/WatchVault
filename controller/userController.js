@@ -276,6 +276,14 @@ const loadShop = async (req, res) => {
         const cartCount = cart ? cart.product.length : 0
         const wishlist = await Wishlist.findOne({ userId: userId })
         const wishlistCount = wishlist ? wishlist.product.length : 0
+
+        
+        let page = 1
+        if(req.query.page){
+            page = parseInt(req.query.page, 10)
+        }
+        const limit = 4
+
         const category = await Category.find()
         const { categoryId, sortByName, sortByPrice, search } = req.query
 
@@ -295,7 +303,14 @@ const loadShop = async (req, res) => {
             sortCriteria.productName = sortByName === 'name_asc' ? 1 : -1;
         }
 
-        const prodData = await product.find(query).sort(sortCriteria)
+        const productCount = await product.countDocuments(query);
+        const totalPages = Math.ceil(productCount / limit); 
+
+        const prodData = await product.find(query)
+            .sort(sortCriteria)
+            .limit(limit)
+            .skip((page - 1) * limit) 
+            .exec();
 
         res.render('shop', {
             prodData,
@@ -304,6 +319,8 @@ const loadShop = async (req, res) => {
             sortByPrice,
             search,
             categoryId,
+            totalPages,
+            currentPage: page,
             cartCount,
             wishlistCount
         })

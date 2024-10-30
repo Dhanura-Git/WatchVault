@@ -29,7 +29,7 @@
 	<link rel="stylesheet" type="text/css" href="css/util.css">
 	<link rel="stylesheet" type="text/css" href="css/main.css">
 	<!-- Include SweetAlert2 CSS and JS -->
-	
+
 
 	<!--===============================================================================================-->
 </head>
@@ -509,14 +509,16 @@
 					.then(response => {
 						if (!response.ok) {
 							return response.json().then(error => {
-								throw new Error(error.error || 'Unknown error');
+								throw new Error(error.error || 'Unknown error'); // Throwing error with a message
 							});
 						}
 						return response.json();
 					});
 			}
 
+
 			function decrease(productId) {
+				if (event) event.preventDefault();
 				const quantityInput = document.getElementById(`quantity_${productId}`);
 				let currentQuantity = parseInt(quantityInput.value, 10);
 
@@ -529,44 +531,38 @@
 							updateSubtotal();
 						})
 						.catch(error => {
-							Swal.fire({
-								icon: 'error',
-								title: 'Oops...',
-								text: error.message,
-							});
+							// Swal.fire({
+							// 	icon: 'error', 
+							// 	title: 'Oops...',
+							// 	text: error.message,
+							// });
 						});
 				}
 			}
+
 			function increase(productId) {
-				const quantityInput = document.getElementById(`quantity_${productId}`);
-				let currentQuantity = parseInt(quantityInput.value, 10);
+    if (event) event.preventDefault();
+    const quantityInput = document.getElementById(`quantity_${productId}`);
+    let currentQuantity = parseInt(quantityInput.value, 10);
 
-				updateCartItem(productId, 1)
-					.then(() => {
-						currentQuantity++;
-						quantityInput.value = currentQuantity;
-						updateTotal(productId, currentQuantity);
-						updateSubtotal();
-						console.log("stock innnnnnnnnnnnnnnn");
-
-					})
-					.catch(error => {
-						// Check if error response exists and handle it
-						if (error) {
-							console.log("stock outttttttttttttttt111111111111111");
-							alert("Stock Limit Reached")
-							
-
-							Swal.fire({
-								icon: 'error',
-								title: 'Stock Limit Reached',
-								text: error.response.data.error,  // Display backend error in Swal
-							});
-						}
-					});
-			}
-
-
+    updateCartItem(productId, 1)
+        .then(() => {
+            currentQuantity++;
+            quantityInput.value = currentQuantity;
+            updateTotal(productId, currentQuantity);
+            updateSubtotal();
+        })
+        .catch(error => {
+            // Only show the alert if the error is NOT 'stock_limit_reached'
+            if (error.message == 'Stock limit reached') {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Stock Limit Reached',
+                    text: error.message,
+                });
+            }
+        });
+}
 
 			function updateTotal(productId, quantity) {
 				const priceElement = document.getElementById(`price_${productId}`);

@@ -88,8 +88,8 @@
                                                     <div id="expiryTimeError" class="error"></div>
                                                 </div>
                                                 <div class="mb-4">
-                                                    <label for="discountValue" class="form-label">Discount value</label>
-                                                    <input type="number" step="0.01" placeholder="Enter discountValue"
+                                                    <label for="discountValue" class="form-label">Discount percentage</label>
+                                                    <input type="number" step="0.01" placeholder="Enter discount percentage"
                                                         class="form-control" id="discountValue" name="discountValue"
                                                         required />
                                                     <div id="discountValueError" class="error"></div>
@@ -124,7 +124,7 @@
                                                     <th>description</th>
                                                     <th>Coupon Code</th>
                                                     <th>Expiration Date</th>
-                                                    <th>Discount Value</th>
+                                                    <th>Discount Percentage</th>
                                                     <th class="text-end">Action</th>
                                                 </tr>
                                             </thead>
@@ -234,10 +234,10 @@
                 }
 
                 if (discountValue === '') {
-                    discountValueError.textContent = 'Discount value is required';
+                    discountValueError.textContent = 'Discount percentage is required';
                     isValid = false;
                 } else if (isNaN(discountValue) || discountValue <= 0) {
-                    discountValueError.textContent = 'Discount value must be a positive number';
+                    discountValueError.textContent = 'Discount percentage must be a positive number';
                     isValid = false;
                 } else if (discountValue > 90) {
                     discountValueError.textContent = 'Discount value percentage cannot exceed 90%';

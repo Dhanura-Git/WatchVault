@@ -918,8 +918,8 @@
 				} catch (error) {
 					Swal.fire({
 						icon: 'error',
-						title: 'Error',
-						text: 'An error occurred while adding the product to your cart. Please try again later.',
+						title: 'Out of stock',
+						text: 'Stock Limit Reached',
 						confirmButtonText: 'OK'
 					});
 					console.error('Error adding product to cart:', error);
