@@ -227,9 +227,21 @@ const listProduct = async (req, res) => {
 
 const offerLoad = async (req, res) => {
     try {
+        let page = parseInt(req.query.page) || 1
+        const limit = 4
         const offerData = await Offer.find()
+            .limit(limit)
+            .skip((page-1)*limit)
+            .exec()
+
+        const count = await Offer.countDocuments()
+        const totalpages = Math.ceil(count/limit)
         if (offerData) {
-            res.render('offer', { offers: offerData })
+            res.render('offer', { 
+                offers: offerData,
+                totalpages,
+                currentpage: page
+             })
         }
     } catch (error) {
         console.log(error);

@@ -45,6 +45,10 @@ const orderSchema = mongoose.Schema({
         type: Boolean,
         default: true
     },
+    returnReason:{
+        type: String,
+        default: ''
+    },
     coupon: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'coupon',

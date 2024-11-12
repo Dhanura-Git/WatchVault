@@ -7,6 +7,7 @@ const address = require('../model/addressModel')
 const Coupon = require('../model/couponModel')
 const Order = require('../model/orderModel')
 const Category = require('../model/categoryModel')
+const Wallet = require('../model/walletModel')
 const mongoose = require('mongoose')
 const PDFDocument = require('pdfkit-table')
 const ExcelJS = require('exceljs');
@@ -29,8 +30,6 @@ const adminVerify = async (req, res) => {
     if (adminData) {
       const matchedPw = await bcrypt.compare(password, adminData.password);
       if (matchedPw) {
-        console.log('admin is logged innn');
-
         req.session.admin = adminData._id
         res.redirect('/admin/adminDashboard')
       } else {
@@ -47,13 +46,10 @@ const adminVerify = async (req, res) => {
 
 const adminDashboard = async (req, res) => {
   try {
-    console.log('dashboard is here');
-
     const topSellingProduct = await bestSellingProduct()
     const orders = await Order.find({ orderVerified: true })
     const products = await product.find({ is_Active: true })
     const revenue = await getRevenueData()
-    console.log(revenue, 'revenue in adminDashboard');
 
     res.render('adminDashboard', {
       topSellingProduct,
@@ -89,12 +85,12 @@ const loadUsers = async (req, res) => {
     const count = await User.countDocuments(query);
     const totalpages = Math.ceil(count / limit);
 
-    res.render('userManagement', { 
+    res.render('userManagement', {
       users: userData,
       totalpages: totalpages,
       currentpage: page,
-      search: searchTerm 
-     })
+      search: searchTerm
+    })
   } catch (error) {
     console.log(error);
   }
@@ -126,10 +122,23 @@ const unblockUser = async (req, res) => {
 
 const listOrders = async (req, res) => {
   try {
-    const orderData = await orders.find({ orderVerified: true }).sort({ placed: -1 })
+    let page = parseInt(req.query.page) || 1
+    const limit = 10
+    const orderData = await orders.find({ orderVerified: true })
+      .sort({ placed: -1 })
+      .limit(limit)
+      .skip((page - 1) * limit)
+      .exec()
+    const count = await orders.countDocuments()
+    const totalpages = Math.ceil(count / limit)
     const userData = await User.find({ is_admin: false })
 
-    res.render('orders', { orders: orderData, users: userData })
+    res.render('orders', {
+      orders: orderData,
+      users: userData,
+      totalpages,
+      currentpage: page
+    })
   } catch (error) {
     console.log(error);
   }
@@ -190,10 +199,20 @@ const updateOrder = async (req, res) => {
 
 const listCoupon = async (req, res) => {
   try {
-    const coupons = await Coupon.find({})
-    console.log(coupons, 'coupons in listCoupon');
+    let page = parseInt(req.query.page) || 1
+    const limit = 4
+    const coupons = await Coupon.find()
+      .limit(limit)
+      .skip((page - 1) * limit)
+      .exec()
+    const count = await Coupon.countDocuments()
+    const totalpages = Math.ceil(count / limit)
 
-    res.render('coupon', { coupons })
+    res.render('coupon', {
+      coupons,
+      totalpages,
+      currentpage: page
+    })
   } catch (error) {
     console.log(error);
 
@@ -265,9 +284,25 @@ const deleteCoupon = async (req, res) => {
 
 const salesReport = async (req, res) => {
   try {
-    const page = parseInt(req.query.page) || 1;
+    const page = parseInt(req.query.page, 10) || 1;
     const pagelimit = 6;
-    const { startDate, endDate, timeRange = 'yearly', status = 'All' } = req.query;
+
+    let { startDate, endDate, timeRange = 'yearly', status = 'All' } = req.query;
+
+    if (timeRange === 'Weekly') {
+      startDate = new Date(endDate.getTime() - 7 * 24 * 60 * 60 * 1000);
+    } else if (timeRange === 'Monthly') {
+      startDate = new Date();
+      startDate.setMonth(endDate.getMonth() - 1);
+    } else if (timeRange === 'Yearly') {
+      startDate = new Date();
+      startDate.setFullYear(endDate.getFullYear() - 1);
+    } else if (timeRange === 'custom') {
+      startDate = new Date(req.query.startDate);
+      endDate = new Date(req.query.endDate);
+    } else {
+      startDate = new Date(0);
+    }
 
     const filter = {
       orderVerified: true,
@@ -275,17 +310,24 @@ const salesReport = async (req, res) => {
       ...(startDate && endDate ? { placed: { $gte: new Date(startDate), $lte: new Date(endDate) } } : {})
     };
 
-    const numberoforders = await Order.countDocuments(filter);
-    const totalpages = Math.ceil(numberoforders / pagelimit);
-
-    const validpage = Math.min(Math.max(page, 1), totalpages);
-    const skip = (validpage - 1) * pagelimit;
+    const numberOfOrders = await Order.countDocuments(filter);
+    const totalPages = Math.ceil(numberOfOrders / pagelimit);
+    const validPage = Math.min(Math.max(page, 1), totalPages);
+    const skip = (validPage - 1) * pagelimit;
 
     const orders = await Order.find(filter)
-    // .sort({ placed: -1 })
-    // .skip(skip)
-    // .limit(pagelimit);
+      .sort({ placed: -1 })
+      .skip(skip)
+      .limit(pagelimit)
+      .lean();
 
+    if (req.xhr || req.headers.accept.indexOf('json') > -1) {
+      return res.json({
+        orders,
+        totalPages,
+        currentPage: validPage,
+      });
+    }
 
     const userData = await User.findOne(req.session.user_id);
 
@@ -294,13 +336,14 @@ const salesReport = async (req, res) => {
 
     res.render('salesReport', {
       username: userData.name,
-      totalpages,
-      page: validpage,
       product: productdata,
       timeRange,
       status,
       orders,
-      categories: category
+      categories: category,
+      totalPages,
+      totalOrders: numberOfOrders,
+      currentPage: validPage
     });
 
   } catch (error) {
@@ -311,18 +354,37 @@ const salesReport = async (req, res) => {
 
 const dailySales = async (req, res) => {
   try {
+    const page = parseInt(req.query.page, 10) || 1;
+    const pagelimit = 6;
+
     const startOfDay = moment().startOf('day').toDate();
     const endOfDay = moment().endOf('day').toDate();
 
     console.log("From the backend - Day start:", startOfDay);
     console.log("From the backend - Day end:", endOfDay);
 
-    const dailyOrders = await Order.find({
+    const filter = {
       placed: { $gte: startOfDay, $lte: endOfDay },
       status: "Delivered"
-    }).sort({ placed: -1 });
+    };
 
-    res.json(dailyOrders);
+    const numberOfOrders = await Order.countDocuments(filter);
+    const totalPages = Math.ceil(numberOfOrders / pagelimit);
+    const validPage = Math.min(Math.max(page, 1), totalPages);
+    const skip = (validPage - 1) * pagelimit;
+
+    const dailyOrders = await Order.find(filter)
+      .sort({ placed: -1 })
+      .skip(skip)
+      .limit(pagelimit);
+
+    console.log(dailyOrders, 'dailyorders salesreport');
+
+    res.json({
+      dailyOrders,
+      totalPages,
+      currentpage: validPage
+    });
   } catch (error) {
     console.log(error.message);
     res.status(500).json({ error: 'Internal Server Error' });
@@ -331,20 +393,37 @@ const dailySales = async (req, res) => {
 
 const weeklySales = async (req, res) => {
   try {
+    const page = parseInt(req.query.page, 10) || 1;
+    const pagelimit = 6;
+
     const startOfWeek = moment().startOf('week').toDate();
     const endOfWeek = moment().endOf('week').toDate();
 
     console.log("From the backend - Week start:", startOfWeek);
     console.log("From the backend - Week end:", endOfWeek);
 
-    const weeklyOrders = await Order.find({
+    const filter = {
       placed: { $gte: startOfWeek, $lte: endOfWeek },
       status: "Delivered"
-    }).sort({ placed: -1 });
+    };
 
-    console.log("From the backend - Weekly Orders:", weeklyOrders);
+    const numberOfOrders = await Order.countDocuments(filter);
+    const totalPages = Math.ceil(numberOfOrders / pagelimit);
+    const validPage = Math.min(Math.max(page, 1), totalPages);
+    const skip = (validPage - 1) * pagelimit;
 
-    res.json(weeklyOrders);
+    const weeklyOrders = await Order.find(filter)
+      .sort({ placed: -1 })
+      .skip(skip)
+      .limit(pagelimit);
+
+    console.log(weeklyOrders, 'weeklyorders salesreport');
+
+    res.json({
+      weeklyOrders,
+      totalPages,
+      currentpage: validPage
+    });
   } catch (error) {
     console.log(error.message);
     res.status(500).json({ error: 'Internal Server Error' });
@@ -353,18 +432,35 @@ const weeklySales = async (req, res) => {
 
 const monthlySales = async (req, res) => {
   try {
+    const page = parseInt(req.query.page, 10) || 1;
+    const pagelimit = 6;
+
     const startOfMonth = moment().startOf('month').toDate();
     const endOfMonth = moment().endOf('month').toDate();
 
     console.log("From the backend - Month start:", startOfMonth);
     console.log("From the backend - Month end:", endOfMonth);
 
-    const monthOrders = await Order.find({
+    const filter = {
       placed: { $gte: startOfMonth, $lte: endOfMonth },
       status: "Delivered"
-    }).sort({ placed: -1 });
+    };
 
-    res.json(monthOrders);
+    const numberOfOrders = await Order.countDocuments(filter);
+    const totalPages = Math.ceil(numberOfOrders / pagelimit);
+    const validPage = Math.min(Math.max(page, 1), totalPages);
+    const skip = (validPage - 1) * pagelimit;
+
+    const monthOrders = await Order.find(filter)
+      .sort({ placed: -1 })
+      .skip(skip)
+      .limit(pagelimit);
+
+    res.json({
+      monthOrders,
+      totalPages,
+      currentpage: validPage
+    });
   } catch (error) {
     console.log(error.message);
     res.status(500).json({ error: 'Internal Server Error' });
@@ -373,8 +469,8 @@ const monthlySales = async (req, res) => {
 
 const yearlySales = async (req, res) => {
   try {
-
-    console.log("hi from the yearly");
+    const page = parseInt(req.query.page, 10) || 1;
+    const pagelimit = 6;
 
     const startOfYear = moment().startOf('year').toDate();
     const endOfYear = moment().endOf('year').toDate();
@@ -382,12 +478,26 @@ const yearlySales = async (req, res) => {
     console.log("From the backend - Year start:", startOfYear);
     console.log("From the backend - Year end:", endOfYear);
 
-    const yearlyOrders = await Order.find({
+    const filter = {
       placed: { $gte: startOfYear, $lte: endOfYear },
       status: "Delivered"
-    }).sort({ placed: -1 });
+    };
 
-    res.json(yearlyOrders);
+    const numberOfOrders = await Order.countDocuments(filter);
+    const totalPages = Math.ceil(numberOfOrders / pagelimit);
+    const validPage = Math.min(Math.max(page, 1), totalPages);
+    const skip = (validPage - 1) * pagelimit;
+
+    const yearlyOrders = await Order.find(filter)
+      .sort({ placed: -1 })
+      .skip(skip)
+      .limit(pagelimit);
+
+    res.json({
+      yearlyOrders,
+      totalPages,
+      currentpage: validPage
+    });
   } catch (error) {
     console.log(error.message);
     res.status(500).json({ error: 'Internal Server Error' });
@@ -410,7 +520,6 @@ const getCustomDate = async (req, res) => {
       return res.status(400).json({ error: 'Invalid date format' });
     }
 
-
     if (startDate > endDate) {
       return res.status(400).json({ error: 'End date must be greater than start date' });
     }
@@ -426,8 +535,7 @@ const getCustomDate = async (req, res) => {
         $gte: startDate,
         $lte: endDate
       },
-      status: 'Delivered',
-      paymentStatus: 'Paid'
+      status: 'Delivered'
     }).skip(skip).limit(limit);
 
 
@@ -440,7 +548,6 @@ const getCustomDate = async (req, res) => {
     });
 
     const totalPages = Math.ceil(totalOrders / limit);
-
 
     res.json({ orders, currentPage: page, totalPages });
   } catch (error) {
@@ -711,7 +818,6 @@ const downloadExcel = async (req, res) => {
 const salesChart = async (req, res) => {
   try {
     const timeRange = req.query.timeRange || 'monthly';
-    console.log(timeRange, "this is from the saleschart");
 
     let dateFormat;
     if (timeRange === 'weekly') {
@@ -738,8 +844,6 @@ const salesChart = async (req, res) => {
       { $sort: { "_id": 1 } }
     ]);
 
-    console.log(saleDate, 'saledate in saleschart');
-
     const labels = saleDate.map(item => item._id);
 
     const datasets = [{
@@ -757,7 +861,6 @@ const salesChart = async (req, res) => {
 const revenueChart = async (req, res) => {
   try {
     const timeRange = req.query.timeRange || 'monthly';
-    console.log(timeRange, "this is from the saleschart");
 
     let dateFormat;
     if (timeRange === 'weekly') {
@@ -864,6 +967,158 @@ const getRevenueData = async () => {
   }
 };
 
+const getReturnReq = async (req, res) => {
+  const perPage = 5;
+  const page = parseInt(req.query.page) || 1;
+
+  try {
+    const returnedOrdersCount = await Order.countDocuments({ status: "Return requested" });
+    const totalPages = Math.ceil(returnedOrdersCount / perPage);
+
+    const returnedOrders = await Order.find({ status: "Return requested" })
+      .skip((page - 1) * perPage)
+      .limit(perPage);
+
+    if (returnedOrders.length === 0) {
+      return res.render('return', {
+        orders: [],
+        users: [],
+        status: 'Return Requested',
+        currentPage: page,
+        totalPages: totalPages,
+        message: 'No returned orders found'
+      });
+    }
+
+    const userIds = [];
+    for (let order of returnedOrders) {
+      userIds.push(order.userId);
+    }
+
+    const users = await User.find({ _id: { $in: userIds } });
+
+    for (let order of returnedOrders) {
+      order.productDetails = [];
+      for (let productItem of order.product) {
+        const productId = productItem.product;
+        const productDetail = await product.findById(productId);
+        order.productDetails.push(productDetail);
+      }
+    }
+
+    res.render('return', {
+      orders: returnedOrders,
+      users: users,
+      status: 'Return Requested',
+      currentPage: page,
+      totalPages: totalPages,
+      message: null
+    });
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send({ message: 'Internal Server Error' });
+  }
+};
+
+
+const acceptReturn = async (req, res) => {
+  try {
+    const { id } = req.query;
+
+    const order = await Order.findById(id);
+    if (!order) {
+      return res.status(404).send('Order not found');
+    }
+
+    order.status = 'Return request Accepted';
+    await order.save();
+
+    res.status(200).json({ message: 'Return request accepted' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Internal Server Error');
+  }
+}
+
+const processReturn = async (req, res) => {
+  try {
+    const orderId = req.query.id;
+
+    const order = await Order.findById(orderId);
+    if (!order) {
+      return res.status(404).send("Order not found");
+    }
+
+    if (order.status !== "Return request Accepted") {
+      return res.status(400).send('Return request must be accepted before processing.');
+    }
+
+    order.status = "Returned";
+    await order.save();
+
+    for (const item of order.product) {
+      const productItem = await product.findById(item.product);
+      if (productItem) {
+        productItem.countInstock += item.quantity;
+        await productItem.save();
+      }
+    }
+
+    if (order.paymentMethod !== 'COD' && order.paymentStatus.toLowerCase() === 'paid'.toLowerCase()) {
+      const userId = order.userId;
+      let wallet = await Wallet.findOne({ userId: userId });
+
+      if (!wallet) {
+        wallet = new Wallet({
+          userId: userId,
+          balance: 0,
+          history: []
+        });
+      }
+
+      const refundAmount = order.totalPrice;
+
+      if (isNaN(refundAmount) || refundAmount === undefined || refundAmount === null) {
+        throw new Error('Invalid totalPrice value');
+      }
+
+      wallet.balance += refundAmount;
+      wallet.history.push({
+        amount: refundAmount,
+        type: 'credit',
+        reason: 'Order Return'
+      });
+
+      await wallet.save();
+      console.log("Refund added to wallet");
+    }
+
+    res.status(200).send('Product returned and refund processed successfully');
+  } catch (error) {
+    console.error('Error processing return:', error);
+    res.status(500).send('An error occurred while processing the return');
+  }
+};
+
+const rejectReturn = async (req, res) => {
+  try {
+    const { id } = req.query;
+
+    const order = await Order.findById(id);
+    if (!order) {
+      return res.status(404).send('Order not found');
+    }
+
+    order.status = 'Rejected by the admin';
+    await order.save();
+
+    res.status(200).json({ message: 'Return request rejected' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Internal Server Error');
+  }
+}
+
 
 
 module.exports = {
@@ -891,5 +1146,9 @@ module.exports = {
   downloadExcel,
   salesChart,
   revenueChart,
-  bestSellingProduct
+  bestSellingProduct,
+  getReturnReq,
+  acceptReturn,
+  processReturn,
+  rejectReturn
 }

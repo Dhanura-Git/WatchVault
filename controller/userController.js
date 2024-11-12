@@ -242,13 +242,12 @@ const resetPassword = async (req, res) => {
 const googleAut = async (req, res) => {
     try {
         const googleUser = req.user
-        console.log(googleUser,'googleUser in googleAut');
-        
+
         const email = googleUser.emails[0].value
         const user = await User.findOne({ email })
         if (!user) {
             res.redirect('/userSignup')
-        } 
+        }
         if (user.is_active) {
             req.session.user = user
             res.redirect('/home');
@@ -277,9 +276,9 @@ const loadShop = async (req, res) => {
         const wishlist = await Wishlist.findOne({ userId: userId })
         const wishlistCount = wishlist ? wishlist.product.length : 0
 
-        
+
         let page = 1
-        if(req.query.page){
+        if (req.query.page) {
             page = parseInt(req.query.page, 10)
         }
         const limit = 4
@@ -304,12 +303,12 @@ const loadShop = async (req, res) => {
         }
 
         const productCount = await product.countDocuments(query);
-        const totalPages = Math.ceil(productCount / limit); 
+        const totalPages = Math.ceil(productCount / limit);
 
         const prodData = await product.find(query)
             .sort(sortCriteria)
             .limit(limit)
-            .skip((page - 1) * limit) 
+            .skip((page - 1) * limit)
             .exec();
 
         res.render('shop', {
@@ -373,8 +372,7 @@ const productToCart = async (req, res) => {
 const getWishlist = async (req, res) => {
     try {
         const user = req.session.user
-        const wishlist = await Wishlist.findOne({ userId: user }).populate('product.productId')
-        const wishlists = await Wishlist.findOne({ userId: user })
+        const wishlist = await Wishlist.findOne({ userId: user }).populate('product.productId') 
         const wishlistCount = wishlist ? wishlist.product.length : 0
         res.render('wishlist', { wishlist, wishlistCount })
     } catch (error) {

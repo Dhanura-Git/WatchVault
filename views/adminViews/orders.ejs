@@ -35,26 +35,6 @@
                         <div class="col-md-9">
                             <div class="card mb-4">
                                 <header class="card-header">
-                                    <!-- <div class="row gx-3">
-                                <div class="col-lg-4 col-md-6 me-auto">
-                                    <input type="text" placeholder="Search..." class="form-control">
-                                </div>
-                                <div class="col-lg-2 col-md-3 col-6">
-                                    <select class="form-select">
-                                        <option>Status</option>
-                                        <option>Active</option>
-                                        <option>Disabled</option>
-                                        <option>Show all</option>
-                                    </select>
-                                </div>
-                                <div class="col-lg-2 col-md-3 col-6">
-                                    <select class="form-select">
-                                        <option>Show 20</option>
-                                        <option>Show 30</option>
-                                        <option>Show 40</option>
-                                    </select>
-                                </div>
-                            </div> -->
                                 </header> <!-- card-header end// -->
                                 <div class="card-body">
                                     <div class="table-responsive">
@@ -101,6 +81,34 @@
                                             </tbody>
                                         </table>
                                     </div> <!-- table-responsive //end -->
+                                    <div class="pagination-area mt-30 mb-50">
+                                <nav aria-label="Page navigation example">
+                                    <ul class="pagination justify-content-start">
+
+                                        <li class="page-item <%= currentpage === 1 ? 'disabled' : '' %>">
+                                            <a class="page-link" href="?page=<%= currentpage - 1 %>">
+                                                <i class="material-icons md-chevron_left"></i>
+                                            </a>
+                                        </li>
+
+                                        <% for(let i=1; i <=totalpages; i++) { %>
+                                            <li class="page-item <%= i === currentpage ? 'active' : '' %>">
+                                                <a class="page-link" href="?page=<%= i %>">
+                                                    <%= i %>
+                                                </a>
+                                            </li>
+                                            <% } %>
+
+                                                <li
+                                                    class="page-item <%= currentpage === totalpages ? 'disabled' : '' %>">
+                                                    <a class="page-link" href="?page=<%= currentpage + 1 %>">
+                                                        <i class="material-icons md-chevron_right"></i>
+                                                    </a>
+                                                </li>
+
+                                    </ul>
+                                </nav>
+                            </div>
                                 </div> <!-- card-body end// -->
                             </div> <!-- card end// -->
                         </div>

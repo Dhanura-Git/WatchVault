@@ -127,12 +127,16 @@ const loadCheckout = async (req, res) => {
     try {
         const userId = req.session.user;
         const cartData = await cart.findOne({ userId }).populate('product.productId');
+        const cartProd = cartData.product
+        console.log(cartProd,'cartProd');
+        
         const cartCount = cartData ? cartData.product.length : 0
         const wishlistData = await wishlist.findOne({ userId })
         const wishlistCount = wishlistData ? wishlistData.product.length : 0
 
-        if (!cartData) {
-            return res.redirect('/loadCart');
+        if (!cartProd || cartProd.length === 0) { 
+            console.log('Checkout is empty');
+            res.redirect('/profile');
         }
         console.log(cartData, 'cartdta inn oadlcheckout');
 

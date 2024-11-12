@@ -12,61 +12,6 @@ var instance = new Razorpay({
     key_secret: process.env.key_secret
 })
 
-// const getOrder = async (req, res) => {
-//     console.log("ggygy");
-
-//     try {
-//         const userId = req.session.user._id;
-//         const cartData = await cart.findOne({ user_id: userId }).populate('product.productId');
-//         console.log(cartData, 'cartData in getOrder');
-
-//         let subTotal = 0;
-//         let discountTotal = 0;
-//         let coupons = [];
-//         let inactiveProducts = []
-
-//         if (cartData) {
-//             const activeProducts = cartData.product.filter(prod => prod.productId.is_Active)
-//             inactiveProducts = cartData.product.filter(prod => !prod.productId.is_Active)
-
-
-//             if (inactiveProducts.length > 0) {
-//                 req.flash('error', `Some products are inactive: ${inactiveProducts.map(prod => prod.productId.productName).join(', ')}`);
-//                 return res.redirect('/cart');
-//             }
-
-//             subTotal = activeProducts.reduce((acc,prod) => acc + (prod.productId.price * prod.quantity),0)
-
-//             if (req.session.coupon) {
-//                 const coupon = await Coupon.findOne({ couponCode: new RegExp(`^${req.session.coupon}$`, `i`) });
-//                 console.log(coupon, 'coupon in getOrder');
-
-//                 if (coupon) {
-//                     discountTotal = subTotal - (subTotal * coupon.discountValue / 100);
-//                     coupons.push(coupon);
-//                 } else {
-//                     discountTotal = subTotal;
-//                 }
-//             }
-//         }
-
-//         const userAddress = await address.findOne({ userId: userId });
-//         console.log(coupons, 'coupons in getOrder');
-//         console.log(inactiveProducts, 'inactiveProducts in getOrder');
-
-
-//         res.render('checkout', { 
-//             userAddress, 
-//             subTotal, 
-//             coupons, 
-//             discountTotal, 
-//             inactiveProducts: inactiveProducts.map(prod => prod.productId.productName)
-//         });
-//     } catch (error) {
-//         console.log(error);
-//     }
-// };
-
 
 const razorpay = async (total) => {
     return new Promise((resolve, reject) => {
@@ -98,15 +43,7 @@ const verifyRazorpay = async (req, res) => {
         hmac.update(`${razorpay_order_id}|${razorpay_payment_id}`);
         const generated_signature = hmac.digest('hex');
 
-
-        console.log(generated_signature, 'generated_signature ');
-        console.log(razorpay_signature, 'razorpay_signature ');
-
-
         if (generated_signature === razorpay_signature) {
-            console.log(generated_signature, 'generated_signature in verifyRazorpay');
-            console.log(razorpay_signature, 'razorpay_signature in verifyRazorpay');
-
             console.log("Signatures match, proceeding with payment verification");
             const orderId = req.session.pendingOrderId
             console.log(`Order ID from session: ${orderId}`);
@@ -121,6 +58,8 @@ const verifyRazorpay = async (req, res) => {
             Order.paymentStatus = "Paid";
             Order.status = "Confirmed";
             await Order.save();
+            cartData.product = [];
+            await cartData.save();
             console.log("Order status updated to 'Paid' and 'Confirmed'");
             res.status(200).json({ success: true, message: 'Payment verified and order confirmed', orderId: Order._id });
         } else {
@@ -136,12 +75,14 @@ const placeOrder = async (req, res) => {
         let totalPrice = parseFloat(req.body.totalPrice);
         const userId = req.session.user;
         const addressId = req.body.addressId;
-        console.log(addressId, 'Address ID in placeOrder:', req.body); 
+        console.log(addressId, 'Address ID in placeOrder:', req.body);
 
         const { couponCode } = req.body;
         const paymentMethod = req.body.paymentOption;
 
-        const cartData = await cart.findOne({ userId: userId });
+        const cartData = await cart.findOne({ userId: userId }).populate('product')
+        console.log(cartData, 'cartdta in placeordser');
+
         const userData = await User.findOne({ _id: userId });
         const wallet = await Wallet.findOne({ userId });
 
@@ -151,6 +92,7 @@ const placeOrder = async (req, res) => {
 
         const products = cartData.product.map(items => ({
             product: items.productId,
+            productName: items.productName,
             quantity: items.quantity,
             price: items.price,
             total: items.quantity * items.price
@@ -198,7 +140,7 @@ const placeOrder = async (req, res) => {
             console.log(`Total price after coupon discount: ${totalPrice}`);
         }
 
-        const totalAmountInPaise = Math.round(totalPrice) 
+        const totalAmountInPaise = Math.round(totalPrice)
         const randomOrderId = 'ORD-' + Math.floor(100000 + Math.random() * 900000);
 
         if (paymentMethod === 'COD') {
@@ -231,6 +173,8 @@ const placeOrder = async (req, res) => {
             console.log('Razorpay payment');
 
             const razorpayOrder = await razorpay(totalAmountInPaise);
+            console.log(razorpayOrder, 'razorpayOrder in fskjdhfwh' );
+            
 
             const newOrder = new order({
                 product: products,
@@ -238,16 +182,21 @@ const placeOrder = async (req, res) => {
                 address: addressSelected,
                 paymentMethod: paymentMethod,
                 userId: userId,
-                paymentStatus: 'Paid',
-                status: 'Confirmed',
+                paymentStatus: 'Pending',
+                status: 'Pending',
                 date: new Date().toLocaleString(),
                 placed: new Date(),
                 coupon: couponCode ? couponData._id : null,
                 orderId: randomOrderId
             });
 
-            req.session.pendingOrderId = newOrder._id;
+            const amtPaid = razorpayOrder.amount_paid
+            const amtDue = razorpayOrder.amount
+            
+
             await newOrder.save();
+
+            req.session.pendingOrderId = newOrder._id;
             req.session.user.cart = cart;
 
             cartData.product = [];
@@ -322,7 +271,6 @@ const orderSuccess = async (req, res) => {
 
 const applyCoupon = async (req, res) => {
     try {
-
         const { coupon, totalsubtotal } = req.body;
 
         if (!totalsubtotal) {
@@ -410,11 +358,43 @@ const removeCoupon = async (req, res) => {
     }
 }
 
+const retryPayment = async (req, res) => {
+    const { id } = req.query;
+    try {
+        const Order = await order.findById(id);
+        if (!Order) {
+            return res.status(404).json({ success: false, message: 'Order not found' });
+        }
+
+        if (Order.paymentStatus === "Pending") {
+            const razorpayOrder = await razorpay(Order.totalPrice);
+
+            
+            req.session.pendingOrderId = Order._id;
+            console.log(`Order ID stored in session: ${req.session.pendingOrderId}`);
+
+            res.status(200).json({
+                success: true,
+                razorpayOrderId: razorpayOrder.id,
+                amount: razorpayOrder.amount,
+                currency: razorpayOrder.currency,
+                orderId: Order._id
+            });
+        } else {
+            res.status(400).json({ success: false, message: 'Order already paid or not eligible for retry' });
+        }
+    } catch (error) {
+        console.log("Error in retry payment:", error);
+        res.status(500).json({ success: false, message: 'Internal Server Error' });
+    }
+};
+
 module.exports = {
     razorpay,
     verifyRazorpay,
     placeOrder,
     orderSuccess,
     applyCoupon,
-    removeCoupon
+    removeCoupon,
+    retryPayment
 }

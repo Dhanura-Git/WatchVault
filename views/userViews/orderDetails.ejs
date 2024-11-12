@@ -126,8 +126,14 @@
 
         .order-total-actions {
             display: flex;
+            flex-wrap: wrap;
+            /* Allow items to wrap in smaller screens */
             justify-content: space-between;
+            /* Space items evenly */
             align-items: center;
+            /* Align items vertically in the center */
+            gap: 10px;
+            /* Add space between items */
             margin-top: 20px;
             background-color: #f8f8f8;
             padding: 15px;
@@ -135,16 +141,22 @@
             box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
         }
 
-        .total-price {
+        .order-total-actions .total-price {
+            flex: 1 1 auto;
+            /* Ensure this element can resize if needed */
+            text-align: left;
+            /* Align text to the left */
             font-size: 1.5rem;
             font-weight: bold;
             color: #444;
         }
 
-        .btn {
+        .order-total-actions .btn {
+            flex: 0 0 auto;
+            /* Prevent buttons from stretching */
+            text-align: center;
             padding: 10px 20px;
             border-radius: 6px;
-            text-align: center;
             cursor: pointer;
         }
 
@@ -158,6 +170,13 @@
             background-color: #6c757d;
             color: white;
             border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-secondary:hover {
+            opacity: 0.8;
         }
 
         .btn-danger {
@@ -175,8 +194,8 @@
             color: white;
             border: none;
             padding: 10px 20px;
-            cursor: pointer;
             border-radius: 5px;
+            transition: all 0.3s ease;
         }
 
         .btn-return-order:hover,
@@ -247,6 +266,27 @@
 
             .modal-content {
                 width: 90%;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .order-total-actions {
+                flex-direction: column;
+                /* Stack items vertically on smaller screens */
+                align-items: stretch;
+                /* Ensure items stretch to fit the width */
+            }
+
+            .order-total-actions .btn {
+                width: 100%;
+                /* Full width for buttons on smaller screens */
+                margin-top: 10px;
+            }
+
+            .order-total-actions .total-price {
+                text-align: center;
+                /* Center align the price on small screens */
+                margin-bottom: 10px;
             }
         }
     </style>
@@ -645,10 +685,13 @@
                 <div class="customer-info">
                     <h3 style="color: #717fe0;">Customer Information</h3>
                     <p><strong>Name:</strong>
-                        <%= user.name %>
+                        <%= order.address[0].name %>
                     </p>
                     <p><strong>Payment Method:</strong>
                         <%= order.paymentMethod %>
+                    </p>
+                    <p><strong>Order ID:</strong>
+                        <%= order.orderId %>
                     </p>
                     <p><strong>Order Status:</strong>
                         <%= order.status %>
@@ -662,22 +705,22 @@
                 <div class="shipping-info">
                     <h3 style="color: #717fe0;">Shipping Address</h3>
                     <p><strong>Address:</strong>
-                        <%= address.Address[0].address %>
+                        <%= order.address[0].address %>
                     </p>
                     <p><strong>City:</strong>
-                        <%= address.Address[0].city %>
+                        <%= order.address[0].city %>
                     </p>
                     <p><strong>State:</strong>
-                        <%= address.Address[0].state %>
+                        <%= order.address[0].state %>
                     </p>
                     <p><strong>Country:</strong>
-                        <%= address.Address[0].country %>
+                        <%= order.address[0].country %>
                     </p>
                     <p><strong>Pincode:</strong>
-                        <%= address.Address[0].pincode %>
+                        <%= order.address[0].pincode %>
                     </p>
                     <p><strong>Phone Number:</strong>
-                        <%= address.Address[0].phone %>
+                        <%= order.address[0].phone %>
                     </p>
                 </div>
 
@@ -685,104 +728,115 @@
                 <div class="products-section">
                     <h3 style="color: #717fe0;">Products Ordered</h3>
                     <ul class="product-list">
-                        <% products.forEach(product=> { %>
+                        <% order.product.forEach(item=> { %>
                             <li class="product-item">
-                                <img src="<%= './uploads/' + product.images[0] %>" alt="<%= product.productName %>"
+                                <img src="<%= '/public/uploads/'+item.images%>" alt="<%= item.productName %>"
                                     class="product-image">
                                 <div class="product-details">
                                     <p class="product-name"><strong>Product:</strong>
-                                        <%= product.productName %>
+                                        <%= item.productName %>
                                     </p>
-                                    <p><strong>Price:</strong> ₹<%= product.price %>
+                                    <p><strong>Price:</strong> ₹<%= item.price %>
                                     </p>
                                     <p><strong>Quantity:</strong>
-                                        <%= order.product[0].quantity %>
+                                        <%= item.quantity %>
                                     </p>
 
                                     <!-- Coupon Details (if applicable) -->
-                                    <% if (product.discountPercentage> 0) { %>
+                                    <% if (item.discountPercentage> 0) { %>
                                         <p><strong>Coupon Applied:</strong>
                                             <%= order.coupon.couponCode %>
                                         </p>
-                                        <p><strong>Discount Amount:</strong> ₹<%= product.discountAmount %>
+                                        <p><strong>Discount Amount:</strong> ₹<%= item.discountAmount.toFixed(2) %>
                                         </p>
-                                        <p><strong>Price After Discount:</strong> ₹<%= (product.discountedPrice *
-                                                order.product[0].quantity).toFixed(2) %>
+                                        <p><strong>Price After Discount:</strong> ₹<%= (item.discountedPrice *
+                                                item.quantity).toFixed(2) %>
+                                        </p>
+                                        <p><strong>Total Price:</strong> ₹<%= (item.price * item.quantity).toFixed(2) %>
                                         </p>
                                         <% } else { %>
-                                            <p><strong>Total Price:</strong> ₹<%= (product.price *
-                                                    order.product[0].quantity).toFixed(2) %>
-                                            </p>
+
                                             <% } %>
                                 </div>
                             </li>
                             <% }) %>
                     </ul>
                 </div>
-            </div>
 
-            <!-- Coupon and Total Section -->
-            <div class="order-total-actions">
-                <% if (couponDiscount > 0) { %>
-                    <% console.log(couponDiscount,'here');
-                     %>
-                    <p><strong>Products with Coupon Applied:</strong>
-                        <%= productsWithCoupon %>
-                    </p>
-                    <p><strong>Coupon Discount (%):</strong>
-                        <%= couponPercentage %>%
-                    </p>
-                    <p><strong>Discount Amount:</strong> ₹<%= couponDiscount.toFixed(2) %>
-                    </p>
-                    <% } %>
-
-                        <p class="total-price"><strong>Total Price after Discount:</strong> 
-                        ₹<%= discountedTotalPrice.toFixed(2) %>
+                <!-- Coupon and Total Section -->
+                <div class="order-total-actions">
+                    <% if (couponDiscount> 0) { %>
+                        <p><strong>Products with Coupon Applied:</strong>
+                            <%= productsWithCoupon %>
                         </p>
+                        <p><strong>Coupon Discount (%):</strong>
+                            <%= couponPercentage %>%
+                        </p>
+                        <p><strong>Discount Amount:</strong> ₹<%= couponDiscount.toFixed(2) %>
+                        </p>
+                        <% } %>
 
+                            <p class="total-price"><strong>Total Price after Discount:</strong>
+                                ₹<%= discountedTotalPrice.toFixed(2) %>
+                            </p>
 
-                        <% if (order.status !=='Cancelled' && order.status !=='Return Requested' && order.status
-                            !=='Returned' ) { %>
-                            <% if (order.status==='Delivered' ) { %>
-                                <button id="returnOrderBtn" class="btn btn-return-order"
-                                    data-order-id="<%= order._id %>">
-                                    Return Product
+                            <% if (order.paymentMethod !=='COD' && order.paymentStatus==='Pending' && order.status
+                                !=="Cancelled" ) { %>
+                                <button id="payNowBtn" class="btn btn-pay-now" style="background-color: gold;"
+                                    data-order-id="<%= order._id %>" data-address-id="<%= address.Address[0]._id %>"
+                                    data-total-price="<%= order.totalPrice %>">
+                                    Pay Now
                                 </button>
-                                <button id="downloadInvoiceBtn" class="btn btn-secondary"
-                                    data-order-id="<%= order._id %>">Download Invoice</button>
-                                <% } else { %>
-                                    <button id="cancelOrderBtn" class="btn btn-danger"
-                                        data-order-id="<%= order._id %>">Cancel Order</button>
-                                    <% } %>
-                                        <% } else if (order.status==='Return' ) { %>
-                                            <p><strong>Status:</strong> This order has been returned.</p>
-                                            <% } else if (order.status==='Cancelled' ) { %>
-                                                <p><strong>Status:</strong> This order has been cancelled.</p>
+                                <% } %>
+
+                                    <% if (order.status !=="Cancelled" && order.status !=="Return requested" &&
+                                        order.status !=="Returned" ) { %>
+                                        <% if (order.status==='Delivered' ) { %>
+                                            <button id="returnOrderBtn" class="btn btn-return-order"
+                                                data-order-id="<%= order._id %>">
+                                                Return Product
+                                            </button>
+                                            <button id="downloadInvoiceBtn" class="btn btn-secondary"
+                                                data-order-id="<%= order._id %>">
+                                                Download Invoice
+                                            </button>
+                                            <% } else { %>
+                                                <button id="cancelOrderBtn" class="btn btn-danger"
+                                                    data-order-id="<%= order._id %>">
+                                                    Cancel Order
+                                                </button>
                                                 <% } %>
+                                                    <% } else if (order.status==="Returned" ) { %>
+                                                        <p><strong>Status:</strong> This order has been returned.</p>
+                                                        <% } else if (order.status==="Cancelled" ) { %>
+                                                            <p><strong>Status:</strong> This order has been cancelled.
+                                                            </p>
+                                                            <% } %>
+                </div>
+
             </div>
         </div>
-    </div>
 
 
 
 
-    <!-- // end orderdetails  -->
+        <!-- // end orderdetails  -->
 
 
 
 
 
-    <!-- ::::::::::::::All JS Files here :::::::::::::: -->
-    <!-- Global Vendor, plugins JS -->
-    <!-- <script src="assets/js/vendor/modernizr-3.11.2.min.js"></script>
+        <!-- ::::::::::::::All JS Files here :::::::::::::: -->
+        <!-- Global Vendor, plugins JS -->
+        <!-- <script src="assets/js/vendor/modernizr-3.11.2.min.js"></script>
         <script src="assets/js/vendor/jquery-3.5.1.min.js"></script>
         <script src="assets/js/vendor/jquery-migrate-3.3.0.min.js"></script>
         <script src="assets/js/vendor/popper.min.js"></script>
         <script src="assets/js/vendor/bootstrap.min.js"></script>
         <script src="assets/js/vendor/jquery-ui.min.js"></script>  -->
 
-    <!--Plugins JS-->
-    <!-- <script src="assets/js/plugins/swiper-bundle.min.js"></script>
+        <!--Plugins JS-->
+        <!-- <script src="assets/js/plugins/swiper-bundle.min.js"></script>
         <script src="assets/js/plugins/material-scrolltop.js"></script>
         <script src="assets/js/plugins/jquery.nice-select.min.js"></script>
         <script src="assets/js/plugins/jquery.zoom.min.js"></script>
@@ -793,164 +847,261 @@
         <script src="assets/js/plugins/jquery.instagramFeed.js"></script>
         <script src="assets/js/plugins/ajax-mail.js"></script> -->
 
-    <!-- Use the minified version files listed below for better performance and remove the files listed above -->
-    <script src="/public/userAssets/honoAsset/assets/js/vendor/vendor.min.js"></script>
-    <script src="/public/userAssets/honoAsset/assets/js/plugins/plugins.min.js"></script>
+        <!-- Use the minified version files listed below for better performance and remove the files listed above -->
+        <script src="/public/userAssets/honoAsset/assets/js/vendor/vendor.min.js"></script>
+        <script src="/public/userAssets/honoAsset/assets/js/plugins/plugins.min.js"></script>
 
-    <!-- swal  -->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
+        <!-- swal  -->
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
 
-    <!-- Main JS -->
-    <script src="/public/userAssets/honoAsset/assets/js/main.js"></script>
+        <!-- Main JS -->
+        <script src="/public/userAssets/honoAsset/assets/js/main.js"></script>
 
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', (event) => {
-    const cancelOrderBtn = document.getElementById('cancelOrderBtn');
+        <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
-    if (cancelOrderBtn) {
-        cancelOrderBtn.addEventListener('click', function () {
-            Swal.fire({
-                title: 'Are you sure?',
-                text: 'You are about to cancel this order.',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, cancel it!'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    console.log(result, 'result in cancelOrder Front');
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script>
+            document.addEventListener('DOMContentLoaded', (event) => {
+                const cancelOrderBtn = document.getElementById('cancelOrderBtn');
+                const payNowBtn = document.getElementById('payNowBtn');
 
-                    fetch(`/cancelOrder/<%= order._id %>`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        }
-                    })
-                        .then(response => response.json()) // Parse the JSON response
-                        .then(data => {
-                            console.log(data, 'response in cancelOrder Front');
-
-                            if (data.success) {
-                                Swal.fire(
-                                    'Cancelled!',
-                                    'Your order has been cancelled.',
-                                    'success'
-                                ).then(() => {
-                                    // Reload the page after showing success message
-                                    location.reload();
-                                });
-                            } else {
-                                Swal.fire(
-                                    'Error!',
-                                    data.message,
-                                    'error'
-                                );
-                            }
-                        })
-                        .catch(error => {
-                            console.error('Error in cancelling order:', error);
-                            Swal.fire(
-                                'Error!',
-                                'There was a problem cancelling your order.',
-                                'error'
-                            );
-                        });
-                }
-            });
-        });
-    }
-});
-
-
-    </script>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const downloadInvoiceBtn = document.getElementById('downloadInvoiceBtn');
-            if (downloadInvoiceBtn) {
-                downloadInvoiceBtn.addEventListener('click', () => {
-                    const orderId = downloadInvoiceBtn.getAttribute('data-order-id');
-                    window.location.href = `/invoicePdf/${orderId}`;
-                });
-            }
-        }); 
-    </script>
-
-    <script>
-        document.getElementById('returnOrderBtn')?.addEventListener('click', function () {
-            Swal.fire({
-                title: 'Are you sure?',
-                text: 'You are about to return this product.',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, return it!'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    Swal.fire({
-                        title: 'Select Return Reason',
-                        input: 'select',
-                        inputOptions: {
-                            'Defective product': 'Defective product',
-                            'Received wrong item': 'Received wrong item',
-                            'Product not as described': 'Product not as described',
-                            'Other': 'Other'
-                        },
-                        inputPlaceholder: 'Select a reason',
-                        showCancelButton: true,
-                        confirmButtonColor: '#3085d6',
-                        cancelButtonColor: '#d33',
-                        confirmButtonText: 'Submit',
-                        cancelButtonText: 'Cancel'
-                    }).then((reasonResult) => {
-                        if (reasonResult.isConfirmed) {
-                            const returnReason = reasonResult.value;
-
-
-                            Swal.fire(
-                                'Returned!',
-                                'Your product return request has been submitted.',
-                                'success'
-                            ).then(() => {
-                                window.location.reload();
-                            });
-
-
-                            fetch(`/returnOrder/<%= order._id %>`, {
-                                method: 'POST',
-                                headers: {
-                                    'Content-Type': 'application/json'
-                                },
-                                body: JSON.stringify({ returnReason })
-                            })
-                                .then(response => response.json())
-                                .then(data => {
-                                    if (!data.success) {
-
-                                        Swal.fire(
-                                            'Error!',
-                                            data.message || 'There was a problem returning your product.',
-                                            'error'
-                                        );
+                if (cancelOrderBtn) {
+                    cancelOrderBtn.addEventListener('click', function () {
+                        Swal.fire({
+                            title: 'Are you sure?',
+                            text: 'You are about to cancel this order.',
+                            icon: 'warning',
+                            showCancelButton: true,
+                            confirmButtonColor: '#3085d6',
+                            cancelButtonColor: '#d33',
+                            confirmButtonText: 'Yes, cancel it!'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                fetch(`/cancelOrder/<%= order._id %>`, {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json'
                                     }
                                 })
-                            // .catch(error => {
-
-                            //     Swal.fire(
-                            //         'Error!',
-                            //         'There was a problem returning your product.',
-                            //         'error'
-                            //     );
-                            // });
-                        }
+                                    .then(response => response.json()) // Parse the JSON response
+                                    .then(data => {
+                                        if (data.success) {
+                                            Swal.fire(
+                                                'Cancelled!',
+                                                'Your order has been cancelled.',
+                                                'success'
+                                            ).then(() => {
+                                                location.reload();
+                                            })
+                                                .then(() => {
+                                                    if (payNowBtn) {
+                                                        payNowBtn.style.display = 'none';
+                                                    }
+                                                })
+                                        } else {
+                                            Swal.fire(
+                                                'Error!',
+                                                data.message,
+                                                'error'
+                                            );
+                                        }
+                                    })
+                                    .catch(error => {
+                                        console.error('Error in cancelling order:', error);
+                                        Swal.fire(
+                                            'Error!',
+                                            'There was a problem cancelling your order.',
+                                            'error'
+                                        );
+                                    });
+                            }
+                        });
                     });
                 }
             });
-        });
-    </script>
+        </script>
+
+        <script>
+            document.getElementById('payNowBtn').addEventListener('click', function (e) {
+                
+                const orderId = e.target.dataset.orderId;
+                const addressId = e.target.dataset.addressId;
+                const totalPrice = e.target.dataset.totalPrice;
+                console.log({ orderId, addressId, totalPrice });
+                fetch(`/retryPayment?id=${orderId}`, {
+                    method: 'GET',
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log(data, "data");
+                        if (data.success) {
+                            let amount = data.amount * 100
+                            const options = {
+                                "key": "rzp_test_KBfeMuv9hM52Z0",
+                                "amount": amount,
+                                "currency": data.currency,
+                                "name": "WatchVault",
+                                "description": "Payment for the product",
+                                "order_id": data.razorpayOrderId,
+                                "handler": function (response) {
+                                    verifyPayment(response, data.orderId, addressId, totalPrice);
+                                },
+                                "prefill": {
+                                    name: "WatchVault",
+                                    email: 'watchvault@gmail.com',
+                                    contact: '7744774477'
+                                },
+                                "theme": {
+                                    "color": "#3399cc"
+                                }
+                            };
+                            
+                            const rzp1 = new Razorpay(options);
+                            console.log(rzp1,'rzp1 in payNowBtn');
+                            rzp1.open();
+                        } else {
+                            alert(data.message);
+                        }
+                    })
+                    .catch(error => console.error('Error:', error));
+            });
+
+            function verifyPayment(payment, orderId, addressId, totalPrice) {
+                console.log('Order ID:', orderId);
+                console.log({ totalPrice });
+                fetch('/verifyRazorpay', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        razorpay_order_id: payment.razorpay_order_id,
+                        razorpay_payment_id: payment.razorpay_payment_id,
+                        razorpay_signature: payment.razorpay_signature,
+                        addressId: addressId,
+                        orderId: orderId,
+                        totalPrice: totalPrice
+                    })
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Payment Successful!',
+                                text: 'Your payment was successful and your order has been confirmed.',
+                                confirmButtonText: 'OK'
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    window.location.href = `/orderSuccess/${verifyData.orderId}`;
+                                }
+                            });
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Payment Verification Failed',
+                                text: 'Please try again.',
+                                confirmButtonText: 'OK'
+                            });
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'Something went wrong. Please try again later.',
+                            confirmButtonText: 'OK'
+                        });
+                    });
+            }
+        </script>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                const downloadInvoiceBtn = document.getElementById('downloadInvoiceBtn');
+                if (downloadInvoiceBtn) {
+                    downloadInvoiceBtn.addEventListener('click', () => {
+                        const orderId = downloadInvoiceBtn.getAttribute('data-order-id');
+                        window.location.href = `/invoicePdf/${orderId}`;
+                    });
+                }
+            }); 
+        </script>
+
+        <script>
+            document.getElementById('returnOrderBtn')?.addEventListener('click', function () {
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: 'You are about to return this product.',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, return it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        Swal.fire({
+                            title: 'Select Return Reason',
+                            input: 'select',
+                            inputOptions: {
+                                'Defective product': 'Defective product',
+                                'Received wrong item': 'Received wrong item',
+                                'Product not as described': 'Product not as described',
+                                'Other': 'Other'
+                            },
+                            inputPlaceholder: 'Select a reason',
+                            showCancelButton: true,
+                            confirmButtonColor: '#3085d6',
+                            cancelButtonColor: '#d33',
+                            confirmButtonText: 'Submit',
+                            cancelButtonText: 'Cancel'
+                        }).then((reasonResult) => {
+                            if (reasonResult.isConfirmed) {
+                                const returnReason = reasonResult.value;
+
+
+                                Swal.fire(
+                                    'Returned!',
+                                    'Your product return request has been submitted.',
+                                    'success'
+                                ).then(() => {
+                                    window.location.reload();
+                                });
+
+
+                                fetch(`/returnOrder/<%= order._id %>`, {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json'
+                                    },
+                                    body: JSON.stringify({ returnReason })
+                                })
+                                    .then(response => response.json())
+                                    .then(data => {
+                                        if (!data.success) {
+
+                                            Swal.fire(
+                                                'Error!',
+                                                data.message || 'There was a problem returning your product.',
+                                                'error'
+                                            );
+                                        }
+                                    })
+                                // .catch(error => {
+
+                                //     Swal.fire(
+                                //         'Error!',
+                                //         'There was a problem returning your product.',
+                                //         'error'
+                                //     );
+                                // });
+                            }
+                        });
+                    }
+                });
+            });
+        </script>
 
 
 </body>

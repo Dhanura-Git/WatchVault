@@ -68,6 +68,11 @@ adminRoute.get('/downloadExcel', adminAuth.isLogin, adminController.downloadExce
 adminRoute.get('/salesChart', adminAuth.isLogin, adminController.salesChart)
 adminRoute.get('/revenueChart',adminAuth.isLogin,adminController.revenueChart)
 
+adminRoute.get('/returnReq', adminAuth.isLogin, adminController.getReturnReq)
+adminRoute.get('/acceptReturn',adminAuth.isLogin,adminController.acceptReturn)
+adminRoute.post('/processReturn',adminAuth.isLogin,adminController.processReturn)
+adminRoute.get('/rejectReturn',adminAuth.isLogin,adminController.rejectReturn)
+
 
 
 module.exports = adminRoute

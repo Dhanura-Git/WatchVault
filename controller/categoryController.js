@@ -3,9 +3,22 @@ const product = require('../model/productModel')
 
 const loadCategory = async (req, res) => {
     try {
+        let page = parseInt(req.query.page) || 1
+        const limit = 4
         const categoryData = await category.find()
+            .limit(limit)
+            .skip((page - 1) * limit)
+            .exec()
+
+        const count = await category.countDocuments()
+        const totalpages = Math.ceil(count / limit)
+
         if (categoryData) {
-            res.render('category', { categories: categoryData })
+            res.render('category', {
+                categories: categoryData,
+                totalpages: totalpages,
+                currentpage: page
+            })
         }
     } catch (error) {
         console.log(error);

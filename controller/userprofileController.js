@@ -156,29 +156,28 @@ const deleteAddress = async (req, res) => {
 const orderDetails = async (req, res) => {
     try {
         const userId = req.session.user
-        const orderId = req.query.id
-        const orderData = await order.findById(orderId).populate('coupon')
-        console.log(orderData,'orderdata in orderdetails in userpro');
+        const orderId = req.query.id.toString()
+
+        const orderData = await order.findById(orderId)
+            .populate('coupon');
+        console.log(orderData, 'orderData is orderDetails');
         
 
         const userData = await User.findById(orderData.userId)
-        const productsInOrder = orderData.product.map(product => product.product)
+        const productsInOrder = orderData.product.map(product => product.product._id || product.product)
+
         const productData = await product.find({ _id: { $in: productsInOrder } })
 
         let productsWithCoupon = 0
         orderData.product.forEach(item => {
             const product = productData.find(p => p._id.equals(item.product))
-            console.log(product,'orderdetails in userprofile');
             
             if (product) {
                 product.quantity = orderData.quantity
                 product.originalPrice = product.originalPrice || 0
-                console.log(product.originalPrice,'originalPrice inside the if');
                 product.discountedPrice = orderData.totalPrice || 0
-                console.log(product.discountedPrice,'discountedPrice inside the if');
 
                 product.discountPercentage = ((product.originalPrice - product.discountedPrice) / product.originalPrice) * 100 || 0
-                console.log(product.discountPercentage,'inside the if');
                 
                 product.discountAmount = product.originalPrice - product.discountedPrice || 0
                 if (product.discountPercentage > 0) {
@@ -186,8 +185,6 @@ const orderDetails = async (req, res) => {
                 }
             }
         })
-        console.log(productsWithCoupon, 'productswithcoupon in orderDetails');
-
 
         const addressData = await Address.findOne({ userId: userId })
         const cartData = await cart.findOne({ userId: userId })
@@ -280,20 +277,25 @@ const cancelOrder = async (req, res) => {
 const returnOrder = async (req, res) => {
     try {
         const orderId = req.params.orderId
+        
         const { returnReason } = req.body
-        const orderData = await order.findById({ orderId })
+        console.log(req.body,'req.body in returnOrder');
+        
+        const orderData = await order.findById( orderId )
+        console.log(orderData,'orderData in returnOrder');
+
         if (!orderData) {
             return res.status(400).send('Order not found')
         }
         if (orderData.status !== 'Delivered') {
             return res.status(400).send('Only delivered orders can be returned')
         }
-        order.status = 'Return requested'
-        order.returnReason = returnReason
+        orderData.status = 'Return requested'
+        orderData.returnReason = returnReason
+        
         await orderData.save()
     } catch (error) {
-        console.log(error);
-
+        console.log(error)
     }
 }
 

@@ -52,7 +52,7 @@ userRoute.delete('/deleteWishlist', userAuth.isLogin, userAuth.isBlocked, userCo
 userRoute.get('/profile', userAuth.isLogin, userAuth.isBlocked, userprofileController.loadProfile)
 userRoute.get('/orderDetails', userAuth.isLogin, userAuth.isBlocked, userprofileController.orderDetails)
 userRoute.post('/cancelOrder/:id', userAuth.isLogin, userAuth.isBlocked, userprofileController.cancelOrder)
-userRoute.post('/returnOrder', userAuth.isLogin, userAuth.isBlocked, userprofileController.returnOrder)
+userRoute.post('/returnOrder/:orderId', userAuth.isLogin, userAuth.isBlocked, userprofileController.returnOrder)
 
 userRoute.get('/addAddress', userAuth.isLogin, userAuth.isBlocked, userprofileController.loadAddAddress)
 userRoute.post('/addAddress', userAuth.isLogin, userAuth.isBlocked, userprofileController.addAddress)
@@ -73,6 +73,7 @@ userRoute.post('/placeOrder', userAuth.isLogin, userAuth.isBlocked, orderControl
 
 userRoute.get('/orderSuccess/:orderId', userAuth.isLogin, userAuth.isBlocked, orderController.orderSuccess)
 userRoute.post('/verifyRazorpay', userAuth.isLogin, userAuth.isBlocked, orderController.verifyRazorpay)
+userRoute.get('/retryPayment', userAuth.isLogin, userAuth.isBlocked, orderController.retryPayment)
 
 userRoute.post('/addToWallet', userAuth.isLogin, userAuth.isBlocked, userprofileController.addToWallet)
 userRoute.post('/verifyPaymentWallet', userAuth.isLogin, userAuth.isBlocked, userprofileController.verifyPaymentWallet)

@@ -86,71 +86,35 @@
                                                 <a href="#" class="img-wrap"> <img
                                                         src="/public/uploads/<%= prodData[i].images[0] %>"
                                                         alt="Product"> </a>
-                                                <div class="info-wrap">
-                                                    <a href="#" class="title text-truncate" style="font-size: 16px;">
-                                                        <%= prodData[i].productName %>
-                                                    </a>
-
-                                                    <% if (prodData[i].offer && prodData[i].offer.offerName &&
-                                                        prodData[i].offer.offerPercentage> 0) { %>
-                                                        <div class="price mb-2" style="font-size: 14px;">₹ <%=
-                                                                prodData[i].originalPrice %>
-                                                        </div>
-                                                        <% } else { %>
-                                                            <div class="price mb-2" style="font-size: 14px;">₹ <%=
-                                                                    prodData[i].price %>
-                                                            </div>
-                                                            <% } %>
-
-
-                                                                <!-- Container to align Edit and Block buttons -->
-                                                                <div class="button-container">
-                                                                    <a href="/admin/loadEditProduct?id=<%= prodData[i]._id %>"
-                                                                        class="btn btn-sm font-sm rounded btn-brand">
-                                                                        <i class="material-icons md-edit"></i> Edit
-                                                                    </a>
-
-                                                                    <% if (prodData[i].is_Active) { %>
-                                                                        <a href="/admin/unlistProduct?id=<%= prodData[i]._id %>"
-                                                                            class="btn btn-sm btn-danger rounded font-sm">Block</a>
-                                                                        <% } else{ %>
-                                                                            <a href="/admin/listProduct?id=<%= prodData[i]._id %>"
-                                                                                class="btn btn-sm btn-success rounded font-sm">Unblock</a>
-                                                                            <% } %>
+                                                        <div class="info-wrap">
+                                                            <a href="#" class="title text-truncate" style="font-size: 16px;">
+                                                                <%= prodData[i].productName %>
+                                                            </a>
+                                                        
+                                                            <!-- Check if an offer is available -->
+                                                            <% if (prodData[i].offer && prodData[i].offer.offerName && prodData[i].offer.offerPercentage > 0) { %>
+                                                                <div class="price-offer-wrap" style="display: flex; align-items: center; font-size: 14px;">
+                                                                    <div class="price" style="margin-right: 10px; color: #555;">₹ <%= prodData[i].originalPrice %></div>
+                                                                    <div class="offer" style="color: #ff5722;">(<%= prodData[i].offer.offerPercentage %>% off)</div>
                                                                 </div>
-
-                                                                <br>
-
-                                                                <% if (prodData[i].offer===null) { %>
-
-                                                                    <% } else { %>
-
-                                                                        <% } %>
-
-                                                                            <% if (prodData[i].offer &&
-                                                                                prodData[i].offer.offerName &&
-                                                                                prodData[i].offer.offerPercentage> 0) {
-                                                                                %>
-                                                                                <div class="price mb-2"
-                                                                                    style="font-size: 12px;">
-                                                                                    <div class="price mb-2"
-                                                                                        style="font-size: 14px;">
-                                                                                        Discount: <%=
-                                                                                            prodData[i].offer.offerPercentage
-                                                                                            %> %</p>
-                                                                                    </div>
-                                                                                    <div class="price mb-2"
-                                                                                        style="font-size: 14px;">Price
-                                                                                        After Discount: ₹<%=
-                                                                                            prodData[i].price %>
-                                                                                            </p>
-                                                                                    </div>
-
-                                                                                </div>
-
-                                                                                <% } %>
-
-                                                </div>
+                                                            <% } else { %>
+                                                                <div class="price" style="font-size: 14px; color: #555;">₹ <%= prodData[i].price %></div>
+                                                            <% } %>
+                                                        
+                                                            <!-- Edit and Block/Unblock buttons -->
+                                                            <div class="button-container" style="margin-top: 10px;">
+                                                                <a href="/admin/loadEditProduct?id=<%= prodData[i]._id %>" class="btn btn-sm font-sm rounded btn-brand">
+                                                                    <i class="material-icons md-edit"></i> Edit
+                                                                </a>
+                                                        
+                                                                <% if (prodData[i].is_Active) { %>
+                                                                    <a href="/admin/unlistProduct?id=<%= prodData[i]._id %>" class="btn btn-sm btn-danger rounded font-sm">Block</a>
+                                                                <% } else { %>
+                                                                    <a href="/admin/listProduct?id=<%= prodData[i]._id %>" class="btn btn-sm btn-success rounded font-sm">Unblock</a>
+                                                                <% } %>
+                                                            </div>
+                                                        </div>
+                                                        
 
                                             </div>
 

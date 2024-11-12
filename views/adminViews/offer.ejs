@@ -99,6 +99,35 @@
                                                     <% } %>
                                             </table>
                                             <% } %>
+
+                                            <div class="pagination-area mt-30 mb-50">
+                                                <nav aria-label="Page navigation example">
+                                                    <ul class="pagination justify-content-start">
+                
+                                                        <li class="page-item <%= currentpage === 1 ? 'disabled' : '' %>">
+                                                            <a class="page-link" href="?page=<%= currentpage - 1 %>">
+                                                                <i class="material-icons md-chevron_left"></i>
+                                                            </a>
+                                                        </li>
+                
+                                                        <% for(let i=1; i <=totalpages; i++) { %>
+                                                            <li class="page-item <%= i === currentpage ? 'active' : '' %>">
+                                                                <a class="page-link" href="?page=<%= i %>">
+                                                                    <%= i %>
+                                                                </a>
+                                                            </li>
+                                                            <% } %>
+                
+                                                                <li
+                                                                    class="page-item <%= currentpage === totalpages ? 'disabled' : '' %>">
+                                                                    <a class="page-link" href="?page=<%= currentpage + 1 %>">
+                                                                        <i class="material-icons md-chevron_right"></i>
+                                                                    </a>
+                                                                </li>
+                
+                                                    </ul>
+                                                </nav>
+                                            </div>
                                     </div>
                                 </div> <!-- .col// -->
                             </div> <!-- .row // -->
