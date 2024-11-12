@@ -159,26 +159,28 @@ const orderDetails = async (req, res) => {
         const orderId = req.query.id.toString()
 
         const orderData = await order.findById(orderId)
-            .populate('coupon');
+            .populate('coupon', 'product')
+
         console.log(orderData, 'orderData is orderDetails');
-        
+
 
         const userData = await User.findById(orderData.userId)
         const productsInOrder = orderData.product.map(product => product.product._id || product.product)
 
         const productData = await product.find({ _id: { $in: productsInOrder } })
 
+
         let productsWithCoupon = 0
         orderData.product.forEach(item => {
             const product = productData.find(p => p._id.equals(item.product))
-            
+
             if (product) {
                 product.quantity = orderData.quantity
                 product.originalPrice = product.originalPrice || 0
                 product.discountedPrice = orderData.totalPrice || 0
 
                 product.discountPercentage = ((product.originalPrice - product.discountedPrice) / product.originalPrice) * 100 || 0
-                
+
                 product.discountAmount = product.originalPrice - product.discountedPrice || 0
                 if (product.discountPercentage > 0) {
                     productsWithCoupon += 1
@@ -277,12 +279,12 @@ const cancelOrder = async (req, res) => {
 const returnOrder = async (req, res) => {
     try {
         const orderId = req.params.orderId
-        
+
         const { returnReason } = req.body
-        console.log(req.body,'req.body in returnOrder');
-        
-        const orderData = await order.findById( orderId )
-        console.log(orderData,'orderData in returnOrder');
+        console.log(req.body, 'req.body in returnOrder');
+
+        const orderData = await order.findById(orderId)
+        console.log(orderData, 'orderData in returnOrder');
 
         if (!orderData) {
             return res.status(400).send('Order not found')
@@ -292,7 +294,7 @@ const returnOrder = async (req, res) => {
         }
         orderData.status = 'Return requested'
         orderData.returnReason = returnReason
-        
+
         await orderData.save()
     } catch (error) {
         console.log(error)
@@ -468,7 +470,7 @@ const invoicePdf = async (req, res) => {
     }
 }
 
-const loadChangePassword = async(req,res)=>{
+const loadChangePassword = async (req, res) => {
     try {
         res.render('changePassword',)
     } catch (error) {
@@ -477,12 +479,9 @@ const loadChangePassword = async(req,res)=>{
 }
 
 const changePassword = async (req, res) => {
-    console.log("is it here");
     try {
-        const userId = req.session.user._id;
-        console.log(req.body, "t");
+        const userId = req.session.user;
         const { 'Current-password': currentPassword, 'new-password': newPassword, 'confirm-password': confirmPassword } = req.body;
-        console.log(currentPassword, "this is current");
 
         const user = await User.findById(userId);
         if (!user) {
@@ -491,7 +490,6 @@ const changePassword = async (req, res) => {
 
         const match = await bcrypt.compare(currentPassword, user.password);
         if (!match) {
-            console.log("Error: Current password is incorrect");
             return res.status(400).json({ success: false, message: 'Current password is incorrect' });
         }
 
@@ -500,14 +498,16 @@ const changePassword = async (req, res) => {
         }
 
         const hashedPassword = await bcrypt.hash(newPassword, 10);
-        await User.updateOne({ _id: userId }, { $set: { password: hashedPassword } });
+
+        user.password = hashedPassword;
+        await user.save();
 
         res.json({ success: true, message: 'Password updated successfully' });
     } catch (error) {
-        console.error(error);
-        // res.status(500).json({ success: false, message: 'Internal Server Error' });
+        console.error('Error:', error);
+        res.status(500).json({ success: false, message: 'Internal Server Error' });
     }
-}; 
+};
 
 
 module.exports = {

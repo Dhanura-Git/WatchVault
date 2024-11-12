@@ -25,8 +25,7 @@ mongoose.connect(process.env.mongoUrl)
     })
 
 app.use('/public', express.static('public'));
-
-//for parsing body data
+    
 app.use(express.json())
 
 app.use(express.urlencoded({ extended: true }))

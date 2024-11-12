@@ -29,6 +29,8 @@ const addToCart = async (req, res) => {
         const productId = req.query.id
         const userId = req.session.user
         const Product = await product.findOne({ _id: productId })
+        console.log(Product,'prod in addTocarttt');
+        
 
         if (!Product || Product.stock == 0) {
             return res.status(404).json({ success: false, error: 'Product is out of stock' })
@@ -50,9 +52,23 @@ const addToCart = async (req, res) => {
             }
             Cart.product[existingProduct].quantity = totalQuantity
         } else {
-            Cart.product.push({ productId: Product._id, quantity: 1, price: Product.price })
+            console.log(Product,'Product in cart pushing');
+            
+            Cart.product.push({
+                productId: Product._id,
+                quantity: 1,
+                price: Product.price,
+                productName: Product.productName,
+                image: Product.images[0],
+                category: Product.category,
+                stock: Product.stock,
+                offer: Product.offer,
+                originalPrice: Product.originalPrice
+            });
+
         }
         await Cart.save()
+        
         const cartLength = Cart.product.reduce((total, item) => total + item.quantity, 0)
         res.status(200).json({ success: true, message: 'Product added to cart', cartLength })
 
@@ -60,6 +76,55 @@ const addToCart = async (req, res) => {
         console.log(error);
     }
 }
+
+// const addToCart = async (req, res) => {
+//     try {
+//         const productId = req.query.id;
+//         const userId = req.session.user;
+//         const Product = await product.findOne({ _id: productId });
+
+//         if (!Product || Product.stock === 0) {
+//             return res.status(404).json({ success: false, error: 'Product is out of stock' });
+//         }
+
+//         let Cart = await cart.findOne({ userId });
+//         if (!Cart) {
+//             Cart = new cart({ userId, product: [] });
+//         }
+
+//         const existingProduct = Cart.product.findIndex(item => item.productId.toString() === productId);
+//         if (existingProduct !== -1) {
+//             const totalQuantity = Cart.product[existingProduct].quantity + 1;
+
+//             if (totalQuantity > Product.stock) {
+//                 return res.status(400).json({ success: false, error: 'Stock unavailable' });
+//             }
+
+//             Cart.product[existingProduct].quantity = totalQuantity;
+//         } else {
+//             Cart.product.push({
+//                 productId: Product._id,
+//                 quantity: 1,
+//                 price: Product.price,
+//                 productName: Product.productName,
+//                 image: Product.images[0],
+//                 category: Product.category,
+//                 stock: Product.stock,
+//                 offer: Product.offer,
+//                 originalPrice: Product.originalPrice
+//             });
+
+//             console.log(Cart,'cart pusheddd');
+            
+//         }
+
+//         await Cart.save();
+//         const cartLength = Cart.product.reduce((total, item) => total + item.quantity, 0);
+//         res.status(200).json({ success: true, message: 'Product added to cart', cartLength });
+//     } catch (error) {
+//         console.log(error);
+//     }
+// };
 
 const updateCart = async (req, res) => {
     try {

@@ -372,7 +372,7 @@ const productToCart = async (req, res) => {
 const getWishlist = async (req, res) => {
     try {
         const user = req.session.user
-        const wishlist = await Wishlist.findOne({ userId: user }).populate('product.productId') 
+        const wishlist = await Wishlist.findOne({ userId: user }).populate('product.productId')
         const wishlistCount = wishlist ? wishlist.product.length : 0
         res.render('wishlist', { wishlist, wishlistCount })
     } catch (error) {
